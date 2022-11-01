@@ -100,8 +100,8 @@ The database table will be created automatically.
 ----
 <dependencies>
   <dependency>
-    <groupId>com.stanislav</groupId>
-    <artifactId>simplelock-spring-starter</artifactId>
+    <groupId>com.github.Natureknight</groupId>
+    <artifactId>SimpleLock</artifactId>
     <version>1.0.0</version>
   </dependency>
 </dependencies>

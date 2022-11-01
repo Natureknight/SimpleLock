@@ -37,15 +37,30 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.stanislav</groupId>
-    <artifactId>simplelock-parent</artifactId>
-    <version>1.0.1</version>
-    <name>simplelock</name>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <groupId>com.github.Natureknight</groupId>
+    <artifactId>SimpleLock</artifactId>
+    <version>1.0.0</version>
+    <name>SimpleLock</name>
     <description>Simple JDBC distributed locking for Spring Boot</description>
 
     <properties>
         <java.version>11</java.version>
     </properties>
+
+    <developers>
+        <developer>
+            <name>Stanislav Dabov</name>
+            <email>stanislav.dabov@gmail.com</email>
+            <organizationUrl>https://github.com/Natureknight</organizationUrl>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
