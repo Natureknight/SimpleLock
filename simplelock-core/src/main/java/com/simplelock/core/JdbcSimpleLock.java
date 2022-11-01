@@ -22,7 +22,6 @@
 package com.simplelock.core;
 
 import com.simplelock.api.SimpleLock;
-import com.simplelock.exception.SimpleLockAcquireException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,7 +29,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static com.simplelock.core.JdbcSimpleLockQuery.ACQUIRE;
@@ -50,7 +48,7 @@ public class JdbcSimpleLock implements SimpleLock {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Optional<String> acquire(String key) throws SimpleLockAcquireException {
+    public Optional<String> acquire(String key) {
         String token = UUID.randomUUID().toString();
         try {
             jdbcTemplate.update(ACQUIRE.getQuery(),
