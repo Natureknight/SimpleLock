@@ -39,7 +39,7 @@
 
     <groupId>com.github.Natureknight</groupId>
     <artifactId>SimpleLock</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <name>SimpleLock</name>
     <description>Simple JDBC distributed locking for Spring Boot</description>
 
