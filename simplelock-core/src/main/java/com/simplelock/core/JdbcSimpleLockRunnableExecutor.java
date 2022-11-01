@@ -25,7 +25,7 @@ import com.simplelock.api.LockRunnableExecutor;
 import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
 
-import static java.util.Objects.nonNull;
+import java.util.Optional;
 
 /**
  * Default implementation of {@link LockRunnableExecutor} for JDBC distributed locks.
@@ -42,14 +42,12 @@ public class JdbcSimpleLockRunnableExecutor implements LockRunnableExecutor {
 
     @Override
     public void executeLocked(Runnable runnable, int delayInMillis) {
-        String token = null;
+        Optional<String> tokenOptional = Optional.empty();
         try {
-            token = simpleLock.acquire(UNIQUE_KEY);
+            tokenOptional = simpleLock.acquire(UNIQUE_KEY);
             runnable.run();
         } finally {
-            if (nonNull(token)) {
-                simpleLock.release(token, delayInMillis);
-            }
+            tokenOptional.ifPresent(s -> simpleLock.release(s, delayInMillis));
         }
     }
 }

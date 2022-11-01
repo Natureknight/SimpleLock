@@ -23,6 +23,8 @@ package com.simplelock.api;
 
 import com.simplelock.exception.SimpleLockAcquireException;
 
+import java.util.Optional;
+
 /**
  * Common interface to define API for locking.
  * Provide your own implementation in your configuration in order to override the default behaviour.
@@ -38,7 +40,7 @@ public interface SimpleLock {
      * @param key given unique key of the lock.
      * @return the lock token
      */
-    String acquire(String key) throws SimpleLockAcquireException;
+    Optional<String> acquire(String key) throws SimpleLockAcquireException;
 
     /**
      * Release the lock by given lock token.

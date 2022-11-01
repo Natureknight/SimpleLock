@@ -23,12 +23,13 @@ package com.simplelock.core;
 
 import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import static java.util.Objects.nonNull;
+import java.util.Optional;
 
 /**
  * This aspect will inject the behaviour of acquiring the lock before the annotated method and
@@ -39,6 +40,7 @@ import static java.util.Objects.nonNull;
  */
 @Aspect
 @RequiredArgsConstructor
+@Slf4j
 public class SimpleJdbcLockedAspect {
 
     private final SimpleLock simpleLock;
@@ -48,15 +50,17 @@ public class SimpleJdbcLockedAspect {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         SimpleJdbcLocked annotation = signature.getMethod().getAnnotation(SimpleJdbcLocked.class);
-        String token = null;
+
+        log.debug("Intercepted method [{}] annotated with [{}]", signature.getMethod().getName(),
+                SimpleJdbcLocked.class.getSimpleName());
+
+        Optional<String> tokenOptional = Optional.empty();
         Object result;
         try {
-            token = simpleLock.acquire(signature.getMethod().getName());
+            tokenOptional = simpleLock.acquire(signature.getMethod().getName());
             result = joinPoint.proceed();
         } finally {
-            if (nonNull(token)) {
-                simpleLock.release(token, annotation.releaseAfter());
-            }
+            tokenOptional.ifPresent(token -> simpleLock.release(token, annotation.releaseAfter()));
         }
 
         return result;

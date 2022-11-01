@@ -24,8 +24,10 @@ package com.simplelock.core;
 import com.simplelock.api.SimpleLock;
 import com.simplelock.exception.SimpleLockAcquireException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -40,27 +42,32 @@ import static com.simplelock.core.JdbcSimpleLockQuery.RELEASE;
  * @since 1.0.0
  */
 @RequiredArgsConstructor
+@Slf4j
 public class JdbcSimpleLock implements SimpleLock {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public String acquire(String key) throws SimpleLockAcquireException {
+    public Optional<String> acquire(String key) throws SimpleLockAcquireException {
         String token = UUID.randomUUID().toString();
         try {
             jdbcTemplate.update(ACQUIRE.getQuery(),
                     UUID.randomUUID().toString(),
                     key,
                     token);
+            log.debug("Acquired lock for key [{}]", key);
         } catch (Exception ex) {
-            throw new SimpleLockAcquireException("Could not acquire lock for key: " + key, ex);
+            log.warn("Could not acquire lock for key [{}], execution will be skipped.", key, ex);
+            return Optional.empty();
         }
 
-        return token;
+        return Optional.of(token);
     }
 
     @Override
     public void release(String token, int delayInMillis) {
+        log.debug("Lock will be released for token [{}] after [{}] milliseconds",
+                token, delayInMillis);
         executeWithDelay(() -> jdbcTemplate.update(RELEASE.getQuery(), token), delayInMillis);
     }
 
