@@ -131,7 +131,7 @@ Add the project dependency into your `pom.xml`
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
-    <version>1.0.10</version>
+    <version>1.1.0</version>
   </dependency>
 </dependencies>
 ----
@@ -152,7 +152,7 @@ repositories {
 Add the project dependency into your `build.gradle`
 [source,groovy]
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.0.10')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.1.0')
 ----
 
 === Compatibility
@@ -172,27 +172,6 @@ You can also create an alias for your lock, so you don't have to specify `@Simpl
 
 == Changelog
 
-=== 1.0.10
+=== 1.1.0
 
-- Added `maven-release-plugin`
-
-=== 1.0.9
-
-- Rearrange package structure
-- Added Create Release GitHub action
-
-=== 1.0.8
-
-- Fixed Spring auto configuration
-
-=== 1.0.7
-
-- Added `LockRunnableExecutor` and default implementation
-
-=== 1.0.6
-
-- Added `SimpleLockAcquireException` to be thrown in case lock could not be acquired
-
-=== 1.0.5
-
-- Initial implementation
+- Release version

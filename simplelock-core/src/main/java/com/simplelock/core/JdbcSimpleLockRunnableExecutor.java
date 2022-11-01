@@ -36,7 +36,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class JdbcSimpleLockRunnableExecutor implements LockRunnableExecutor {
 
-    public static final String UNIQUE_KEY = "unique-key-db37d712-c1e7-45b7-835c-f24b2a526fb9";
+    private static final String UNIQUE_KEY = "unique-key-db37d712-c1e7-45b7-835c-f24b2a526fb9";
 
     private final SimpleLock simpleLock;
 
