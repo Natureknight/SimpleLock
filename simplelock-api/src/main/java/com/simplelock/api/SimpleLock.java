@@ -24,6 +24,7 @@ package com.simplelock.api;
 import com.simplelock.exception.SimpleLockAcquireException;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Common interface to define API for locking.
@@ -45,9 +46,9 @@ public interface SimpleLock {
     /**
      * Release the lock by given lock token.
      *
-     * @param token         lock token to unlock
-     * @param delayInMillis time period until we release the lock in
-     *                      {@link java.util.concurrent.TimeUnit#MILLISECONDS milliseconds}
+     * @param token        lock token to unlock
+     * @param releaseAfter time period until we release the lock
+     * @param timeUnit     chosen {@link TimeUnit}
      */
-    void release(String token, int delayInMillis);
+    void release(String token, long releaseAfter, TimeUnit timeUnit);
 }

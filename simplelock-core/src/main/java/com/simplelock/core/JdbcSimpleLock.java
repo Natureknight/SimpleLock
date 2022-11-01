@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -34,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.simplelock.core.JdbcSimpleLockQuery.ACQUIRE;
 import static com.simplelock.core.JdbcSimpleLockQuery.RELEASE;
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 /**
  * Default implementation of {@link SimpleLock}
@@ -65,20 +67,11 @@ public class JdbcSimpleLock implements SimpleLock {
     }
 
     @Override
-    public void release(String token, int delayInMillis) {
-        log.debug("Lock will be released for token [{}] after [{}] milliseconds",
-                token, delayInMillis);
-        executeWithDelay(() -> jdbcTemplate.update(RELEASE.getQuery(), token), delayInMillis);
-    }
+    public void release(String token, long releaseAfter, TimeUnit timeUnit) {
+        log.debug("Lock will be released for token [{}] after [{}] {}", token,
+                releaseAfter, timeUnit.toString().toLowerCase(Locale.ROOT));
 
-    private void executeWithDelay(Runnable runnable, int delayInMillis) {
-        if (delayInMillis == 0) {
-            runnable.run();
-            return;
-        }
-
-        Executors.newSingleThreadScheduledExecutor().schedule(runnable,
-                delayInMillis,
-                TimeUnit.MILLISECONDS);
+        newSingleThreadScheduledExecutor().schedule(() -> jdbcTemplate.update(RELEASE.getQuery(), token),
+                releaseAfter, timeUnit);
     }
 }

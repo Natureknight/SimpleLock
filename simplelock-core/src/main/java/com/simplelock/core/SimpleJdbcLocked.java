@@ -22,6 +22,7 @@
 package com.simplelock.core;
 
 import java.lang.annotation.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking.
@@ -37,5 +38,10 @@ public @interface SimpleJdbcLocked {
     /**
      * @return the period to hold the lock for in milliseconds
      */
-    int releaseAfter() default 1000;
+    long releaseAfter() default 0L;
+
+    /**
+     * @return the chosen {@link TimeUnit}
+     */
+    TimeUnit timeUnit() default TimeUnit.MILLISECONDS;
 }

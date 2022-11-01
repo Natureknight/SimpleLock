@@ -60,7 +60,9 @@ public class SimpleJdbcLockedAspect {
             tokenOptional = simpleLock.acquire(signature.getMethod().getName());
             result = joinPoint.proceed();
         } finally {
-            tokenOptional.ifPresent(token -> simpleLock.release(token, annotation.releaseAfter()));
+            tokenOptional.ifPresent(token -> simpleLock.release(token,
+                    annotation.releaseAfter(),
+                    annotation.timeUnit()));
         }
 
         return result;

@@ -27,14 +27,10 @@ Using Spring Aspect:
 ----
 @Component
 public class MyJdbcLockedService {
-
-    private static final int MINUTE = 60;
-    private static final int IN_MILLISECONDS = 1000;
-
     /**
      * Execute with distributed JDBC lock, by holding the lock for 5 minutes
      */
-    @SimpleJdbcLocked(releaseAfter = 5 * MINUTE * IN_MILLISECONDS)
+    @SimpleJdbcLocked(releaseAfter = 5L, timeUnit = TimeUnit.MINUTES)
     public void doSomething() {
         // locked method body
     }
@@ -56,10 +52,6 @@ or programatically:
 @Component
 @RequiredArgsConstructor
 public class MyJdbcLockedService {
-
-    private static final int MINUTE = 60;
-    private static final int IN_MILLISECONDS = 1000;
-
     private final LockRunnableExecutor lockRunnableExecutor;
 
     /**
@@ -68,7 +60,7 @@ public class MyJdbcLockedService {
     public void doSomething() {
         lockRunnableExecutor.executeLocked(() -> {
             // locked method body wrapped in java.lang.Runnable
-        }, 5 * MINUTE * IN_MILLISECONDS);
+        }, 5L, TimeUnit.MINUTES);
     }
 
     /**
@@ -131,7 +123,7 @@ Add the project dependency into your `pom.xml`
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
   </dependency>
 </dependencies>
 ----
@@ -152,7 +144,7 @@ repositories {
 Add the project dependency into your `build.gradle`
 [source,groovy]
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.1.1')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.1.2')
 ----
 
 === Compatibility
@@ -171,6 +163,10 @@ If you want to use custom lock implementations, simply implement `com.stanislav.
 You can also create an alias for your lock, so you don't have to specify `@SimpleJdbcLocked` type field.
 
 == Changelog
+
+=== 1.1.2
+
+- Allow clients to choose the `TimeUnit` when holding the lock
 
 === 1.1.1
 

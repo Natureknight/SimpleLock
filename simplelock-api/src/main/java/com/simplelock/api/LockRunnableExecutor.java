@@ -21,6 +21,8 @@
 
 package com.simplelock.api;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * API for simplifying the way to use {@link SimpleLock} implementations.
  *
@@ -35,14 +37,15 @@ public interface LockRunnableExecutor {
      * @param runnable given {@link Runnable} to execute with a distributed lock
      */
     default void executeLocked(Runnable runnable) {
-        executeLocked(runnable, 0);
+        executeLocked(runnable, 0L, TimeUnit.MILLISECONDS);
     }
 
     /**
      * Execute the given {@link Runnable} with holding the lock for given milliseconds.
      *
-     * @param runnable      given {@link Runnable} to execute with a distributed lock
-     * @param delayInMillis time period to release the lock afer
+     * @param runnable     given {@link Runnable} to execute with a distributed lock
+     * @param releaseAfter time period to release the lock afer
+     * @param timeUnit     chosen {@link TimeUnit}
      */
-    void executeLocked(Runnable runnable, int delayInMillis);
+    void executeLocked(Runnable runnable, long releaseAfter, TimeUnit timeUnit);
 }

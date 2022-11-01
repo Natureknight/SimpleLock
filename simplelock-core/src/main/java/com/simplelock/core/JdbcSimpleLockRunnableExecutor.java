@@ -26,6 +26,7 @@ import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Default implementation of {@link LockRunnableExecutor} for JDBC distributed locks.
@@ -41,13 +42,13 @@ public class JdbcSimpleLockRunnableExecutor implements LockRunnableExecutor {
     private final SimpleLock simpleLock;
 
     @Override
-    public void executeLocked(Runnable runnable, int delayInMillis) {
+    public void executeLocked(Runnable runnable, long releaseAfter, TimeUnit timeUnit) {
         Optional<String> tokenOptional = Optional.empty();
         try {
             tokenOptional = simpleLock.acquire(UNIQUE_KEY);
             runnable.run();
         } finally {
-            tokenOptional.ifPresent(s -> simpleLock.release(s, delayInMillis));
+            tokenOptional.ifPresent(token -> simpleLock.release(token, releaseAfter, timeUnit));
         }
     }
 }
