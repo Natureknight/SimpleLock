@@ -96,6 +96,18 @@ The database table will be created automatically.
 
 === Maven
 
+Add the jitpack repository into your `pom.xml`
+[source,xml]
+----
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+----
+
+Add the project dependency into your `pom.xml`
 [source,xml]
 ----
 <dependencies>
