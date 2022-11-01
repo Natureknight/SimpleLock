@@ -60,13 +60,13 @@ public class SimpleJdbcLockAutoConfiguration {
 
         @ConditionalOnMissingBean
         @Bean
-        public SimpleLock jdbcSimpleLock(JdbcTemplate jdbcTemplate) {
+        public SimpleLock simpleLock(JdbcTemplate jdbcTemplate) {
             return new JdbcSimpleLock(jdbcTemplate);
         }
 
         @ConditionalOnMissingBean
         @Bean
-        public LockWrapper lockWrapper(JdbcSimpleLock simpleLock) {
+        public LockWrapper lockWrapper(SimpleLock simpleLock) {
             return new JdbcSimpleLockRunnableExecutor(simpleLock);
         }
     }
