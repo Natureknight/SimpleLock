@@ -1,0 +1,131 @@
+= SimpleLock for Spring Boot (JDBC)
+
+Distributed lock ensures your method cannot be run in parallel from multiple JVMs (cluster of servers, microservices, ...).
+It uses a common store to keep track of used locks and your method needs to acquire one or more locks to run.
+
+By default, locks follow methods lifecycle.They are obtained at the start of the method and released at the end of the method.
+Manual controlling is supported and explained later in this document.
+
+All locks acquired by lock implementations in this project will expire after 1 second.
+These options are customizable per annotation.
+
+=== Manually controlled locks
+
+Sometimes you might want lock to be acquired when calling a specific method and get released only when it expires (throttling).
+Use the `releaseAfter` flag to control the duration of holding the lock (in milliseconds, default is 1s (1000 ms))
+
+==== Example
+
+[source,java]
+----
+@Component
+public class MyJdbcLockedService {
+
+    @SimpleJdbcLocked(releaseAfter = 2000)
+    public void doSomething() {
+        // locked method body
+    }
+}
+----
+
+or programatically:
+
+[source,java]
+----
+@Component
+@RequiredArgsConstructor
+public class MyJdbcLockedService {
+
+    private final JdbcSimpleLock jdbcSimpleLock;
+
+    public void doSomething() {
+        String token = jdbcSimpleLock.acquire("your-unique-lock-key");
+        // method body
+        jdbcSimpleLock.release(token, 1000);
+    }
+}
+----
+
+=== Unsuccessful locks
+
+If method cannot be locked, `IllegalStateException` will be thrown.
+
+Method might not acquire the lock if:
+
+. Another method acquired the lock
+. Lock implementation threw an exception
+
+== Enabling locking
+
+To enable locking you must first include `@EnableSimpleJdbcLocking`.
+
+Project provides the following out-of-the-box lock implementations:
+
+* JDBC
+
+=== JDBC locks
+
+.JDBC lock implementations
+|===
+|Annotation
+
+|`@SimpleJdbcLocked`
+|===
+
+Include `@EnableSimpleJdbcLocking` to enable JDBC locks.
+
+[source,java]
+----
+@Configuration
+@EnableSimpleJdbcLocking
+public class LockConfiguration {
+}
+----
+
+[NOTE]
+====
+The database table will be created automatically.
+====
+
+== Importing into your project
+
+=== Maven
+
+[source,xml]
+----
+<dependencies>
+  <dependency>
+    <groupId>com.stanislav</groupId>
+    <artifactId>simplelock-spring-starter</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+</dependencies>
+----
+
+=== Gradle
+
+[source,groovy]
+----
+impplementation('com.stanislav:simplelock-spring-starter:1.0.0')
+----
+
+=== Compatibility
+
+|===
+|Version |Spring Boot version
+
+|1.+
+|2.5.+
+
+|===
+
+== Customization
+
+If you want to use custom lock implementations, simply implement `com.stanislav.simplelock.api.Lock` interface and register it in a configuration.
+You can also create an alias for your lock, so you don't have to specify `@SimpleJdbcLocked` type field.
+
+== Changelog
+
+==== 1.0.0
+
+- Initial implementation
