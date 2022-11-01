@@ -30,6 +30,9 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static com.simplelock.core.JdbcSimpleLockQuery.ACQUIRE;
+import static com.simplelock.core.JdbcSimpleLockQuery.RELEASE;
+
 /**
  * Default implementation of {@link SimpleLock}
  *
@@ -45,7 +48,7 @@ public class JdbcSimpleLock implements SimpleLock {
     public String acquire(String key) throws SimpleLockAcquireException {
         String token = UUID.randomUUID().toString();
         try {
-            jdbcTemplate.update(JdbcSimpleLockQuery.ACQUIRE.getQuery(),
+            jdbcTemplate.update(ACQUIRE.getQuery(),
                     UUID.randomUUID().toString(),
                     key,
                     token);
@@ -58,7 +61,7 @@ public class JdbcSimpleLock implements SimpleLock {
 
     @Override
     public void release(String token, int delayInMillis) {
-        executeWithDelay(() -> jdbcTemplate.update(JdbcSimpleLockQuery.RELEASE.getQuery(), token), delayInMillis);
+        executeWithDelay(() -> jdbcTemplate.update(RELEASE.getQuery(), token), delayInMillis);
     }
 
     private void executeWithDelay(Runnable runnable, int delayInMillis) {

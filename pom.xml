@@ -38,8 +38,8 @@
     </parent>
 
     <groupId>com.github.Natureknight</groupId>
-    <artifactId>SimpleLock</artifactId>
-    <version>1.0.9</version>
+    <artifactId>simplelock-parent</artifactId>
+    <version>1.0.10</version>
     <name>SimpleLock</name>
     <description>Simple JDBC distributed locking for Spring Boot</description>
 
