@@ -93,7 +93,7 @@ Method might not acquire the lock if:
 
 == Enabling locking
 
-Project provides the following out-of-the-box `simpleLock` implementations:
+Project provides the following out-of-the-box `SimpleLock` implementations:
 
 * JDBC
 - JdbcSimpleLock
@@ -103,16 +103,6 @@ Project provides the following out-of-the-box `simpleLock` implementations:
 
 |`@SimpleJdbcLocked`
 |===
-
-Include `@EnableSimpleJdbcLocking` to enable JDBC locks.
-
-[source,java]
-----
-@Configuration
-@EnableSimpleJdbcLocking
-public class LockConfiguration {
-}
-----
 
 [NOTE]
 ====
@@ -139,7 +129,7 @@ Add the project dependency into your `pom.xml`
 ----
 <dependencies>
   <dependency>
-    <groupId>com.github.Natureknight.SimpleLock</groupId>
+    <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
     <version>1.0.10</version>
   </dependency>
@@ -162,7 +152,7 @@ repositories {
 Add the project dependency into your `build.gradle`
 [source,groovy]
 ----
-implementation('com.github.Natureknight.SimpleLock:simplelock-spring-starter:1.0.10')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.0.10')
 ----
 
 === Compatibility
