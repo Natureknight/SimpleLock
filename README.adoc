@@ -184,6 +184,10 @@ You can also create an alias for your lock, so you don't have to specify `@Simpl
 
 == Changelog
 
+=== 1.0.8
+
+- Fixed Spring auto configuration
+
 === 1.0.7
 
 - Added `LockWrapper` and default implementation
