@@ -115,7 +115,7 @@ Add the project dependency into your `pom.xml`
   <dependency>
     <groupId>com.github.Natureknight</groupId>
     <artifactId>SimpleLock</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
   </dependency>
 </dependencies>
 ----
@@ -126,7 +126,7 @@ Add the jitpack repository into your `build.gradle`
 [source,groovy]
 ----
 <<<<<<< Updated upstream
-impplementation('com.github.Natureknight:SimpleLock:1.0.3')
+impplementation('com.github.Natureknight:SimpleLock:1.0.4')
 =======
 repositories {
     mavenCentral()
@@ -139,7 +139,7 @@ repositories {
 Add the project dependency into your `build.gradle`
 [source,groovy]
 ----
-implementation('com.github.Natureknight:SimpleLock:1.0.3')
+implementation('com.github.Natureknight:SimpleLock:1.0.4')
 >>>>>>> Stashed changes
 ----
 
@@ -160,10 +160,6 @@ You can also create an alias for your lock, so you don't have to specify `@Simpl
 
 == Changelog
 
-=== 1.0.1-1.0.3
-
-- JitPack config update
-
-=== 1.0.0
+=== 1.0.1-1.0.4
 
 - Initial implementation
