@@ -53,7 +53,7 @@ public class MyJdbcLockedService {
 
 === Unsuccessful locks
 
-If method cannot be locked, `IllegalStateException` will be thrown.
+If method cannot be locked, `SimpleLockAcquireException` will be thrown.
 
 Method might not acquire the lock if:
 
@@ -69,9 +69,6 @@ Project provides the following out-of-the-box `simpleLock` implementations:
 * JDBC
 - JdbcSimpleLock
 
-=== JDBC locks
-
-.JDBC simpleLock implementations
 |===
 |Annotation
 
@@ -90,7 +87,7 @@ public class LockConfiguration {
 
 [NOTE]
 ====
-The database table will be created automatically.
+The database table `simple_lock` will be created automatically.
 ====
 
 == Importing into your project
@@ -113,9 +110,9 @@ Add the project dependency into your `pom.xml`
 ----
 <dependencies>
   <dependency>
-    <groupId>com.github.Natureknight</groupId>
-    <artifactId>SimpleLock</artifactId>
-    <version>1.0.5</version>
+    <groupId>com.github.Natureknight.SimpleLock</groupId>
+    <artifactId>simplelock-spring-starter</artifactId>
+    <version>1.0.6</version>
   </dependency>
 </dependencies>
 ----
@@ -125,9 +122,6 @@ Add the project dependency into your `pom.xml`
 Add the jitpack repository into your `build.gradle`
 [source,groovy]
 ----
-<<<<<<< Updated upstream
-impplementation('com.github.Natureknight:SimpleLock:1.0.5')
-=======
 repositories {
     mavenCentral()
     maven {
@@ -139,8 +133,7 @@ repositories {
 Add the project dependency into your `build.gradle`
 [source,groovy]
 ----
-implementation('com.github.Natureknight:SimpleLock:1.0.5')
->>>>>>> Stashed changes
+implementation('com.github.Natureknight.SimpleLock:simplelock-spring-starter:1.0.6')
 ----
 
 === Compatibility
@@ -160,6 +153,6 @@ You can also create an alias for your lock, so you don't have to specify `@Simpl
 
 == Changelog
 
-=== 1.0.1-1.0.5
+=== 1.0.5
 
 - Initial implementation

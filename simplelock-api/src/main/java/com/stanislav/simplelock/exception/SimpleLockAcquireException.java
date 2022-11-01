@@ -19,21 +19,21 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.config;
-
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+package com.stanislav.simplelock.exception;
 
 /**
- * Enables the JDBC locking.
+ * Thrown in case the lock is not acquired.
  *
  * @author Stanislav Dabov
- * @since 1.0.0
+ * @since 1.0.6
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Import(SimpleJdbcLockAutoConfiguration.class)
-public @interface EnableSimpleJdbcLocking {
+public class SimpleLockAcquireException extends RuntimeException {
+
+    public SimpleLockAcquireException(String message) {
+        super(message);
+    }
+
+    public SimpleLockAcquireException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -19,21 +19,32 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.config;
+package com.stanislav.simplelock.core;
 
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Enables the JDBC locking.
+ * Enumeration holding the JDBC queries.
  *
  * @author Stanislav Dabov
- * @since 1.0.0
+ * @since 1.0.6
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Import(SimpleJdbcLockAutoConfiguration.class)
-public @interface EnableSimpleJdbcLocking {
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+enum JdbcSimpleLockQuery {
+
+    /**
+     * Query to acquire the lock. Could fail with UK constraint violation on `lock_key` column.
+     */
+    ACQUIRE("INSERT INTO simple_lock (id, lock_key, token) VALUES (?, ?, ?)"),
+
+    /**
+     * Release the lock by given token, which is the result from acquire operation.
+     */
+    RELEASE("DELETE FROM simple_lock WHERE token = ?"),
+    ;
+
+    @Getter
+    private final String query;
 }

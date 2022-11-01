@@ -24,10 +24,10 @@ package com.stanislav.simplelock.config;
 import com.stanislav.simplelock.api.SimpleLock;
 import com.stanislav.simplelock.core.JdbcSimpleLock;
 import com.stanislav.simplelock.core.SimpleJdbcLockedAspect;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
@@ -35,7 +35,13 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 
-@Configuration
+/**
+ * Autoconfiguration for {@link SimpleLock} default impl {@link JdbcSimpleLock}
+ *
+ * @author Stanislav Dabov
+ * @since 1.0.0
+ */
+@AutoConfiguration
 @ConditionalOnClass(JdbcTemplate.class)
 public class SimpleJdbcLockAutoConfiguration {
 

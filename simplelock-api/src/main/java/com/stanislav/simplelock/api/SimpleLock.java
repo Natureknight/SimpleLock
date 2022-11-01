@@ -21,6 +21,8 @@
 
 package com.stanislav.simplelock.api;
 
+import com.stanislav.simplelock.exception.SimpleLockAcquireException;
+
 /**
  * Common interface to define API for locking.
  * Provide your own implementation in your configuration in order to override the default behaviour.
@@ -30,7 +32,20 @@ package com.stanislav.simplelock.api;
  */
 public interface SimpleLock {
 
-    String acquire(String key);
+    /**
+     * Acquire the lock and return unique token as {@link java.util.UUID UUID} to be used for unlocking later on.
+     *
+     * @param key given unique key of the lock.
+     * @return the lock token
+     */
+    String acquire(String key) throws SimpleLockAcquireException;
 
-    void release(String token, Integer delayInMillis);
+    /**
+     * Release the lock by given lock token.
+     *
+     * @param token         lock token to unlock
+     * @param delayInMillis time period until we release the lock in
+     *                      {@link java.util.concurrent.TimeUnit#MILLISECONDS milliseconds}
+     */
+    void release(String token, int delayInMillis);
 }

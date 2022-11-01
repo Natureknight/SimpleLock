@@ -22,6 +22,7 @@
 package com.stanislav.simplelock.core;
 
 import com.stanislav.simplelock.api.SimpleLock;
+import com.stanislav.simplelock.exception.SimpleLockAcquireException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -41,24 +42,33 @@ public class JdbcSimpleLock implements SimpleLock {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public String acquire(String key) {
+    public String acquire(String key) throws SimpleLockAcquireException {
         String token = UUID.randomUUID().toString();
         try {
-            jdbcTemplate.update("INSERT INTO simple_lock (id, lock_key, token) VALUES (?, ?, ?)",
+            jdbcTemplate.update(JdbcSimpleLockQuery.ACQUIRE.getQuery(),
                     UUID.randomUUID().toString(),
                     key,
                     token);
         } catch (Exception ex) {
-            throw new IllegalStateException("Could not acquire lock for key: " + key, ex);
+            throw new SimpleLockAcquireException("Could not acquire lock for key: " + key, ex);
         }
 
         return token;
     }
 
     @Override
-    public void release(String token, Integer delayInMillis) {
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-            jdbcTemplate.update("DELETE FROM simple_lock WHERE token = ?", token);
-        }, delayInMillis, TimeUnit.MILLISECONDS);
+    public void release(String token, int delayInMillis) {
+        executeWithDelay(() -> jdbcTemplate.update(JdbcSimpleLockQuery.RELEASE.getQuery(), token), delayInMillis);
+    }
+
+    private void executeWithDelay(Runnable runnable, int delayInMillis) {
+        if (delayInMillis == 0) {
+            runnable.run();
+            return;
+        }
+
+        Executors.newSingleThreadScheduledExecutor().schedule(runnable,
+                delayInMillis,
+                TimeUnit.MILLISECONDS);
     }
 }
