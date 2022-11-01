@@ -21,13 +21,29 @@ Use the `releaseAfter` attribute to control the duration of holding the lock (in
 
 ==== Example
 
+Using Spring Aspect:
+
 [source,java]
 ----
 @Component
 public class MyJdbcLockedService {
 
-    @SimpleJdbcLocked
+    private static final int MINUTE = 60;
+    private static final int IN_MILLISECONDS = 1000;
+
+    /**
+     * Execute with distributed JDBC lock, by holding the lock for 5 minutes
+     */
+    @SimpleJdbcLocked(releaseAfter = 5 * MINUTE * IN_MILLISECONDS)
     public void doSomething() {
+        // locked method body
+    }
+
+    /**
+     * Execute with distributed JDBC lock, by releasing the lock immediately
+     */
+    @SimpleJdbcLocked
+    public void doSomethingElse() {
         // locked method body
     }
 }
@@ -41,12 +57,27 @@ or programatically:
 @RequiredArgsConstructor
 public class MyJdbcLockedService {
 
-    private final SimpleLock simpleLock;
+    private static final int MINUTE = 60;
+    private static final int IN_MILLISECONDS = 1000;
 
+    private final LockWrapper lockWrapper;
+
+    /**
+     * Execute with distributed JDBC lock, by holding the lock for 5 minutes
+     */
     public void doSomething() {
-        String token = simpleLock.acquire("your-unique-lock-key");
-        // locked method body
-        simpleLock.release(token, 1000);
+        lockWrapper.executeLocked(() -> {
+            // locked method body wrapped in java.lang.Runnable
+        }, 5 * MINUTE * IN_MILLISECONDS);
+    }
+
+    /**
+     * Execute with distributed JDBC lock, by releasing the lock immediately
+     */
+    public void doSomethingElse() {
+        lockWrapper.executeLocked(() -> {
+            // locked method body wrapped in java.lang.Runnable
+        });
     }
 }
 ----
@@ -112,7 +143,7 @@ Add the project dependency into your `pom.xml`
   <dependency>
     <groupId>com.github.Natureknight.SimpleLock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
   </dependency>
 </dependencies>
 ----
@@ -133,7 +164,7 @@ repositories {
 Add the project dependency into your `build.gradle`
 [source,groovy]
 ----
-implementation('com.github.Natureknight.SimpleLock:simplelock-spring-starter:1.0.6')
+implementation('com.github.Natureknight.SimpleLock:simplelock-spring-starter:1.0.7')
 ----
 
 === Compatibility
@@ -153,9 +184,13 @@ You can also create an alias for your lock, so you don't have to specify `@Simpl
 
 == Changelog
 
+=== 1.0.7
+
+- Added `LockWrapper` and default implementation
+
 === 1.0.6
 
-- Added SimpleLockAcquireException to be thrown in case lock could not be acquired
+- Added `SimpleLockAcquireException` to be thrown in case lock could not be acquired
 
 === 1.0.5
 

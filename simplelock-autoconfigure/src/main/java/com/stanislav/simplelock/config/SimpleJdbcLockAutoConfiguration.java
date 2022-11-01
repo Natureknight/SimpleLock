@@ -21,8 +21,10 @@
 
 package com.stanislav.simplelock.config;
 
+import com.stanislav.simplelock.api.LockWrapper;
 import com.stanislav.simplelock.api.SimpleLock;
 import com.stanislav.simplelock.core.JdbcSimpleLock;
+import com.stanislav.simplelock.core.JdbcSimpleLockRunnableExecutor;
 import com.stanislav.simplelock.core.SimpleJdbcLockedAspect;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -45,26 +47,46 @@ import javax.sql.DataSource;
 @ConditionalOnClass(JdbcTemplate.class)
 public class SimpleJdbcLockAutoConfiguration {
 
-    @ConditionalOnMissingBean
-    @Bean
-    public SimpleLock jdbcSimpleLock(JdbcTemplate jdbcTemplate) {
-        return new JdbcSimpleLock(jdbcTemplate);
-    }
-
     @Bean
     public SimpleJdbcLockedAspect simpleJdbcLockedAspect(SimpleLock simpleLock) {
         return new SimpleJdbcLockedAspect(simpleLock);
     }
 
-    @Bean
-    public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
-        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
+    /**
+     * Configuration for default implementation of APIs.
+     */
+    @AutoConfiguration
+    public static class SimpleJdbcLockDefaultConfiguration {
 
-        resourceDatabasePopulator.addScript(new ClassPathResource("/sql/simple_lock.sql"));
-        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
-        dataSourceInitializer.setDataSource(dataSource);
-        dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
+        @ConditionalOnMissingBean
+        @Bean
+        public SimpleLock jdbcSimpleLock(JdbcTemplate jdbcTemplate) {
+            return new JdbcSimpleLock(jdbcTemplate);
+        }
 
-        return dataSourceInitializer;
+        @ConditionalOnMissingBean
+        @Bean
+        public LockWrapper lockWrapper(JdbcSimpleLock simpleLock) {
+            return new JdbcSimpleLockRunnableExecutor(simpleLock);
+        }
+    }
+
+    /**
+     * Configuration for init DDL functionality.
+     */
+    @AutoConfiguration
+    public static class SimpleJdbcLockInitConfiguration {
+
+        @Bean
+        public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
+            ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
+
+            resourceDatabasePopulator.addScript(new ClassPathResource("/sql/simple_lock.sql"));
+            DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
+            dataSourceInitializer.setDataSource(dataSource);
+            dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
+
+            return dataSourceInitializer;
+        }
     }
 }
