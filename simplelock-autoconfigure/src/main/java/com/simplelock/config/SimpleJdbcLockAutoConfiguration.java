@@ -19,13 +19,13 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.config;
+package com.simplelock.config;
 
-import com.stanislav.simplelock.api.LockWrapper;
-import com.stanislav.simplelock.api.SimpleLock;
-import com.stanislav.simplelock.core.JdbcSimpleLock;
-import com.stanislav.simplelock.core.JdbcSimpleLockRunnableExecutor;
-import com.stanislav.simplelock.core.SimpleJdbcLockedAspect;
+import com.simplelock.api.LockRunnableExecutor;
+import com.simplelock.api.SimpleLock;
+import com.simplelock.core.JdbcSimpleLock;
+import com.simplelock.core.JdbcSimpleLockRunnableExecutor;
+import com.simplelock.core.SimpleJdbcLockedAspect;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -66,7 +66,7 @@ public class SimpleJdbcLockAutoConfiguration {
 
         @ConditionalOnMissingBean
         @Bean
-        public LockWrapper lockWrapper(SimpleLock simpleLock) {
+        public LockRunnableExecutor lockRunnableExecutor(SimpleLock simpleLock) {
             return new JdbcSimpleLockRunnableExecutor(simpleLock);
         }
     }

@@ -60,13 +60,13 @@ public class MyJdbcLockedService {
     private static final int MINUTE = 60;
     private static final int IN_MILLISECONDS = 1000;
 
-    private final LockWrapper lockWrapper;
+    private final LockRunnableExecutor lockRunnableExecutor;
 
     /**
      * Execute with distributed JDBC lock, by holding the lock for 5 minutes
      */
     public void doSomething() {
-        lockWrapper.executeLocked(() -> {
+        lockRunnableExecutor.executeLocked(() -> {
             // locked method body wrapped in java.lang.Runnable
         }, 5 * MINUTE * IN_MILLISECONDS);
     }
@@ -75,7 +75,7 @@ public class MyJdbcLockedService {
      * Execute with distributed JDBC lock, by releasing the lock immediately
      */
     public void doSomethingElse() {
-        lockWrapper.executeLocked(() -> {
+        lockRunnableExecutor.executeLocked(() -> {
             // locked method body wrapped in java.lang.Runnable
         });
     }
@@ -92,8 +92,6 @@ Method might not acquire the lock if:
 . Lock implementation threw an exception
 
 == Enabling locking
-
-To enable locking you must first include `@EnableSimpleJdbcLocking`.
 
 Project provides the following out-of-the-box `simpleLock` implementations:
 
@@ -143,7 +141,7 @@ Add the project dependency into your `pom.xml`
   <dependency>
     <groupId>com.github.Natureknight.SimpleLock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
   </dependency>
 </dependencies>
 ----
@@ -164,7 +162,7 @@ repositories {
 Add the project dependency into your `build.gradle`
 [source,groovy]
 ----
-implementation('com.github.Natureknight.SimpleLock:simplelock-spring-starter:1.0.8')
+implementation('com.github.Natureknight.SimpleLock:simplelock-spring-starter:1.0.9')
 ----
 
 === Compatibility
@@ -184,13 +182,18 @@ You can also create an alias for your lock, so you don't have to specify `@Simpl
 
 == Changelog
 
+=== 1.0.9
+
+- Rearrange package structure
+- Added Create Release GitHub action
+
 === 1.0.8
 
 - Fixed Spring auto configuration
 
 === 1.0.7
 
-- Added `LockWrapper` and default implementation
+- Added `LockRunnableExecutor` and default implementation
 
 === 1.0.6
 

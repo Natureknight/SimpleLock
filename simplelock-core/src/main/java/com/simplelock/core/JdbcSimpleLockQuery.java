@@ -19,21 +19,32 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.exception;
+package com.simplelock.core;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Thrown in case the lock is not acquired.
+ * Enumeration holding the JDBC queries.
  *
  * @author Stanislav Dabov
  * @since 1.0.6
  */
-public class SimpleLockAcquireException extends RuntimeException {
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+enum JdbcSimpleLockQuery {
 
-    public SimpleLockAcquireException(String message) {
-        super(message);
-    }
+    /**
+     * Query to acquire the lock. Could fail with UK constraint violation on `lock_key` column.
+     */
+    ACQUIRE("INSERT INTO simple_lock (id, lock_key, token) VALUES (?, ?, ?)"),
 
-    public SimpleLockAcquireException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Release the lock by given token, which is the result from acquire operation.
+     */
+    RELEASE("DELETE FROM simple_lock WHERE token = ?"),
+    ;
+
+    @Getter
+    private final String query;
 }

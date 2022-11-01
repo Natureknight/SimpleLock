@@ -19,33 +19,23 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.api;
+package com.simplelock.core;
 
-import com.stanislav.simplelock.exception.SimpleLockAcquireException;
+import java.lang.annotation.*;
 
 /**
- * Common interface to define API for locking.
- * Provide your own implementation in your configuration in order to override the default behaviour.
+ * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking.
  *
  * @author Stanislav Dabov
  * @since 1.0.0
  */
-public interface SimpleLock {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface SimpleJdbcLocked {
 
     /**
-     * Acquire the lock and return unique token as {@link java.util.UUID UUID} to be used for unlocking later on.
-     *
-     * @param key given unique key of the lock.
-     * @return the lock token
+     * @return the period to hold the lock for in milliseconds
      */
-    String acquire(String key) throws SimpleLockAcquireException;
-
-    /**
-     * Release the lock by given lock token.
-     *
-     * @param token         lock token to unlock
-     * @param delayInMillis time period until we release the lock in
-     *                      {@link java.util.concurrent.TimeUnit#MILLISECONDS milliseconds}
-     */
-    void release(String token, int delayInMillis);
+    int releaseAfter() default 1000;
 }

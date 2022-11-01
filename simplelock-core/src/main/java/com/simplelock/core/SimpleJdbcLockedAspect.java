@@ -19,9 +19,9 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.core;
+package com.simplelock.core;
 
-import com.stanislav.simplelock.api.SimpleLock;
+import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -43,7 +43,7 @@ public class SimpleJdbcLockedAspect {
 
     private final SimpleLock simpleLock;
 
-    @Around("@annotation(com.stanislav.simplelock.core.SimpleJdbcLocked)")
+    @Around("@annotation(com.simplelock.core.SimpleJdbcLocked)")
     public Object intercept(ProceedingJoinPoint joinPoint) throws Throwable {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();

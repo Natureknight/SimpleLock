@@ -19,32 +19,30 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.core;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+package com.simplelock.api;
 
 /**
- * Enumeration holding the JDBC queries.
+ * API for simplifying the way to use {@link SimpleLock} implementations.
  *
  * @author Stanislav Dabov
- * @since 1.0.6
+ * @since 1.0.7
  */
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-enum JdbcSimpleLockQuery {
+public interface LockRunnableExecutor {
 
     /**
-     * Query to acquire the lock. Could fail with UK constraint violation on `lock_key` column.
+     * Execute the given {@link Runnable} without holding the lock.
+     *
+     * @param runnable given {@link Runnable} to execute with a distributed lock
      */
-    ACQUIRE("INSERT INTO simple_lock (id, lock_key, token) VALUES (?, ?, ?)"),
+    default void executeLocked(Runnable runnable) {
+        executeLocked(runnable, 0);
+    }
 
     /**
-     * Release the lock by given token, which is the result from acquire operation.
+     * Execute the given {@link Runnable} with holding the lock for given milliseconds.
+     *
+     * @param runnable      given {@link Runnable} to execute with a distributed lock
+     * @param delayInMillis time period to release the lock afer
      */
-    RELEASE("DELETE FROM simple_lock WHERE token = ?"),
-    ;
-
-    @Getter
-    private final String query;
+    void executeLocked(Runnable runnable, int delayInMillis);
 }

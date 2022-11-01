@@ -19,10 +19,10 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.core;
+package com.simplelock.core;
 
-import com.stanislav.simplelock.api.SimpleLock;
-import com.stanislav.simplelock.exception.SimpleLockAcquireException;
+import com.simplelock.api.SimpleLock;
+import com.simplelock.exception.SimpleLockAcquireException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 

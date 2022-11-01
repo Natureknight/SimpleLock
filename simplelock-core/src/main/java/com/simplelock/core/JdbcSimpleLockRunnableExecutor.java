@@ -19,22 +19,22 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.core;
+package com.simplelock.core;
 
-import com.stanislav.simplelock.api.LockWrapper;
-import com.stanislav.simplelock.api.SimpleLock;
+import com.simplelock.api.LockRunnableExecutor;
+import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
 
 import static java.util.Objects.nonNull;
 
 /**
- * Default implementation of {@link LockWrapper} for JDBC distributed locks.
+ * Default implementation of {@link LockRunnableExecutor} for JDBC distributed locks.
  *
  * @author Stanislav Dabov
  * @since 1.0.7
  */
 @RequiredArgsConstructor
-public class JdbcSimpleLockRunnableExecutor implements LockWrapper {
+public class JdbcSimpleLockRunnableExecutor implements LockRunnableExecutor {
 
     public static final String UNIQUE_KEY = "unique-key-db37d712-c1e7-45b7-835c-f24b2a526fb9";
 

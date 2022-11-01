@@ -19,23 +19,21 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.core;
-
-import java.lang.annotation.*;
+package com.simplelock.exception;
 
 /**
- * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking.
+ * Thrown in case the lock is not acquired.
  *
  * @author Stanislav Dabov
- * @since 1.0.0
+ * @since 1.0.6
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SimpleJdbcLocked {
+public class SimpleLockAcquireException extends RuntimeException {
 
-    /**
-     * @return the period to hold the lock for in milliseconds
-     */
-    int releaseAfter() default 1000;
+    public SimpleLockAcquireException(String message) {
+        super(message);
+    }
+
+    public SimpleLockAcquireException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

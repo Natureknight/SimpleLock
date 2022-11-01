@@ -19,21 +19,33 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.stanislav.simplelock.config;
+package com.simplelock.api;
 
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+import com.simplelock.exception.SimpleLockAcquireException;
 
 /**
- * Enables the JDBC locking.
+ * Common interface to define API for locking.
+ * Provide your own implementation in your configuration in order to override the default behaviour.
  *
  * @author Stanislav Dabov
  * @since 1.0.0
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Import(SimpleJdbcLockAutoConfiguration.class)
-public @interface EnableSimpleJdbcLocking {
+public interface SimpleLock {
+
+    /**
+     * Acquire the lock and return unique token as {@link java.util.UUID UUID} to be used for unlocking later on.
+     *
+     * @param key given unique key of the lock.
+     * @return the lock token
+     */
+    String acquire(String key) throws SimpleLockAcquireException;
+
+    /**
+     * Release the lock by given lock token.
+     *
+     * @param token         lock token to unlock
+     * @param delayInMillis time period until we release the lock in
+     *                      {@link java.util.concurrent.TimeUnit#MILLISECONDS milliseconds}
+     */
+    void release(String token, int delayInMillis);
 }
