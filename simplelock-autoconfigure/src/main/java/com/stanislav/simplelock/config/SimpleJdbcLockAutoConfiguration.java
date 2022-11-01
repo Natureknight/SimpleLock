@@ -21,7 +21,7 @@
 
 package com.stanislav.simplelock.config;
 
-import com.stanislav.simplelock.api.Lock;
+import com.stanislav.simplelock.api.SimpleLock;
 import com.stanislav.simplelock.core.JdbcSimpleLock;
 import com.stanislav.simplelock.core.SimpleJdbcLockedAspect;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -41,13 +41,13 @@ public class SimpleJdbcLockAutoConfiguration {
 
     @ConditionalOnMissingBean
     @Bean
-    public Lock jdbcSimpleLock(JdbcTemplate jdbcTemplate) {
+    public SimpleLock jdbcSimpleLock(JdbcTemplate jdbcTemplate) {
         return new JdbcSimpleLock(jdbcTemplate);
     }
 
     @Bean
-    public SimpleJdbcLockedAspect simpleJdbcLockedAspect(Lock lock) {
-        return new SimpleJdbcLockedAspect(lock);
+    public SimpleJdbcLockedAspect simpleJdbcLockedAspect(SimpleLock simpleLock) {
+        return new SimpleJdbcLockedAspect(simpleLock);
     }
 
     @Bean

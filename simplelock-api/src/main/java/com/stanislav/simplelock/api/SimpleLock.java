@@ -28,7 +28,7 @@ package com.stanislav.simplelock.api;
  * @author Stanislav Dabov
  * @since 1.0.0
  */
-public interface Lock {
+public interface SimpleLock {
 
     String acquire(String key);
 

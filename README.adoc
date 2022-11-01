@@ -11,13 +11,13 @@ It uses a common store to keep track of used locks and your method needs to acqu
 By default, locks follow methods lifecycle.They are obtained at the start of the method and released at the end of the method.
 Manual controlling is supported and explained later in this document.
 
-All locks acquired by lock implementations in this project will expire after 1 second.
+All locks acquired by `SimpleLock` implementations in this project will expire after 1 second.
 These options are customizable per annotation.
 
 === Manually controlled locks
 
 Sometimes you might want lock to be acquired when calling a specific method and get released only when it expires (throttling).
-Use the `releaseAfter` flag to control the duration of holding the lock (in milliseconds, default is 1s (1000 ms))
+Use the `releaseAfter` attribute to control the duration of holding the lock (in milliseconds, default is 1s (1000 ms))
 
 ==== Example
 
@@ -26,7 +26,7 @@ Use the `releaseAfter` flag to control the duration of holding the lock (in mill
 @Component
 public class MyJdbcLockedService {
 
-    @SimpleJdbcLocked(releaseAfter = 2000)
+    @SimpleJdbcLocked
     public void doSomething() {
         // locked method body
     }
@@ -41,12 +41,12 @@ or programatically:
 @RequiredArgsConstructor
 public class MyJdbcLockedService {
 
-    private final JdbcSimpleLock jdbcSimpleLock;
+    private final SimpleLock simpleLock;
 
     public void doSomething() {
-        String token = jdbcSimpleLock.acquire("your-unique-lock-key");
-        // method body
-        jdbcSimpleLock.release(token, 1000);
+        String token = simpleLock.acquire("your-unique-lock-key");
+        // locked method body
+        simpleLock.release(token, 1000);
     }
 }
 ----
@@ -64,13 +64,14 @@ Method might not acquire the lock if:
 
 To enable locking you must first include `@EnableSimpleJdbcLocking`.
 
-Project provides the following out-of-the-box lock implementations:
+Project provides the following out-of-the-box `simpleLock` implementations:
 
 * JDBC
+- JdbcSimpleLock
 
 === JDBC locks
 
-.JDBC lock implementations
+.JDBC simpleLock implementations
 |===
 |Annotation
 
@@ -121,9 +122,25 @@ Add the project dependency into your `pom.xml`
 
 === Gradle
 
+Add the jitpack repository into your `build.gradle`
 [source,groovy]
 ----
+<<<<<<< Updated upstream
 impplementation('com.github.Natureknight:SimpleLock:1.0.3')
+=======
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://jitpack.io'
+    }
+}
+----
+
+Add the project dependency into your `build.gradle`
+[source,groovy]
+----
+implementation('com.github.Natureknight:SimpleLock:1.0.3')
+>>>>>>> Stashed changes
 ----
 
 === Compatibility
@@ -138,7 +155,7 @@ impplementation('com.github.Natureknight:SimpleLock:1.0.3')
 
 == Customization
 
-If you want to use custom lock implementations, simply implement `com.stanislav.simplelock.api.Lock` interface and register it in a configuration.
+If you want to use custom lock implementations, simply implement `com.stanislav.simplelock.api.SimpleLock` interface and register it in a configuration.
 You can also create an alias for your lock, so you don't have to specify `@SimpleJdbcLocked` type field.
 
 == Changelog

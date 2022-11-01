@@ -21,23 +21,22 @@
 
 package com.stanislav.simplelock.core;
 
-import com.stanislav.simplelock.api.Lock;
+import com.stanislav.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.UUID;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Default implementation of {@link Lock}
+ * Default implementation of {@link SimpleLock}
  *
  * @author Stanislav Dabov
  * @since 1.0.0
  */
 @RequiredArgsConstructor
-public class JdbcSimpleLock implements Lock {
+public class JdbcSimpleLock implements SimpleLock {
 
     private final JdbcTemplate jdbcTemplate;
 

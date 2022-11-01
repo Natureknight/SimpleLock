@@ -21,7 +21,7 @@
 
 package com.stanislav.simplelock.core;
 
-import com.stanislav.simplelock.api.Lock;
+import com.stanislav.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -41,7 +41,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class SimpleJdbcLockedAspect {
 
-    private final Lock lock;
+    private final SimpleLock simpleLock;
 
     @Around("@annotation(com.stanislav.simplelock.core.SimpleJdbcLocked)")
     public Object intercept(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -51,11 +51,11 @@ public class SimpleJdbcLockedAspect {
         String token = null;
         Object result;
         try {
-            token = lock.acquire(signature.getMethod().getName());
+            token = simpleLock.acquire(signature.getMethod().getName());
             result = joinPoint.proceed();
         } finally {
             if (nonNull(token)) {
-                lock.release(token, annotation.releaseAfter());
+                simpleLock.release(token, annotation.releaseAfter());
             }
         }
 
