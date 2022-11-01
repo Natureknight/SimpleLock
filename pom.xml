@@ -37,13 +37,6 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
     <groupId>com.github.Natureknight</groupId>
     <artifactId>SimpleLock</artifactId>
     <version>1.0.3</version>

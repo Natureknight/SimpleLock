@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.github.Natureknight</groupId>
             <artifactId>simplelock-autoconfigure</artifactId>
-            <version>1.0.3</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

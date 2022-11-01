@@ -143,6 +143,10 @@ You can also create an alias for your lock, so you don't have to specify `@Simpl
 
 == Changelog
 
+==== 1.0.1-1.0.3
+
+- JitPack config update
+
 ==== 1.0.0
 
 - Initial implementation
