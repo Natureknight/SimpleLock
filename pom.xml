@@ -37,11 +37,12 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.github.Natureknight</groupId>
-    <artifactId>simplelock-parent</artifactId>
-    <version>1.0.10</version>
     <name>SimpleLock</name>
     <description>Simple JDBC distributed locking for Spring Boot</description>
+
+    <groupId>com.github.natureknight</groupId>
+    <artifactId>simplelock-parent</artifactId>
+    <version>1.0.10</version>
 
     <properties>
         <java.version>11</java.version>
