@@ -74,7 +74,8 @@ public class MyJdbcLockedService {
 }
 ----
 
-or another approach, where you need to release the lock later on in another service e.g.
+or another approach, where you're allowed to propagate the lock token further into your service and release the lock
+whenever suitable for your use case
 
 [source,java]
 ----
@@ -105,18 +106,20 @@ public class MyJdbcLockedService {
     /**
      * Execute with distributed JDBC lock, by releasing the lock immediately
      */
-    public void doSomething() {
+    public void doSomethingElse() {
         Optional<String> tokenOptional = simpleLock.acquire("my-unique-lock-key");
 
         // IMPORTANT: lock has been acquired successfully only if the token is present,
         // so make sure you have this check wrapping your service logic that needs to be locked
-        if (tokenOptional.isPresent()) {
-            log.info("Some action executed concurrently");
-
-            // IMPORTANT: Don't forget to release your lock after execution, unless your requirement
-            // is to have it locked forever for some reason
-            simpleLock.release(tokenOptional.get());
+        if (tokenOptional.isEmpty()) {
+            return;
         }
+
+        log.info("Some action executed concurrently");
+
+        // IMPORTANT: Don't forget to release your lock after execution, unless your requirement
+        // is to have it locked forever for some reason
+        simpleLock.release(tokenOptional.get());
     }
 }
 ----
