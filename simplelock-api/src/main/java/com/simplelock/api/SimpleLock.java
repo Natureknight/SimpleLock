@@ -42,6 +42,15 @@ public interface SimpleLock {
     Optional<String> acquire(String key);
 
     /**
+     * Release the lock immediately by given token
+     *
+     * @param token given token
+     */
+    default void release(String token) {
+        release(token, 0L, null);
+    }
+
+    /**
      * Release the lock by given lock token. Lock will be released synchronously in case
      * the {@code releaseAfter} is set to zero, and asynchronously if {@code releaseAfter} is
      * bigger than zero.

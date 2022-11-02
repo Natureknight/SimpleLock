@@ -74,6 +74,41 @@ public class MyJdbcLockedService {
 }
 ----
 
+or another approach, where you need to release the lock later on in another service e.g.
+
+[source,java]
+----
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class MyJdbcLockedService {
+
+    private final SimpleLock simpleLock;
+
+    /**
+     * Execute with distributed JDBC lock, by holding the lock for 5 minutes
+     */
+    public void doSomething() {
+        Optional<String> tokenOptional = simpleLock.acquire("my-unique-lock-key");
+        if (tokenOptional.isPresent()) {
+            log.info("Some action executed concurrently");
+            simpleLock.release(tokenOptional.get(), 5L, TimeUnit.MINUTES);
+        }
+    }
+
+    /**
+     * Execute with distributed JDBC lock, by releasing the lock immediately
+     */
+    public void doSomething() {
+        Optional<String> tokenOptional = simpleLock.acquire("my-unique-lock-key");
+        if (tokenOptional.isPresent()) {
+            log.info("Some action executed concurrently");
+            simpleLock.release(tokenOptional.get());
+        }
+    }
+}
+----
+
 === Unsuccessful locks
 
 If method cannot be locked, the execution will be skipped.
@@ -127,7 +162,7 @@ Add the project dependency into your `pom.xml`
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
   </dependency>
 </dependencies>
 ----
@@ -147,7 +182,7 @@ repositories {
 Add the project dependency into your `build.gradle`
 [source,groovy]
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.2.5')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.2.6')
 ----
 
 === Compatibility
@@ -167,7 +202,7 @@ You can also create an alias for your lock, so you don't have to specify `@Simpl
 
 == Changelog
 
-=== 1.2.2 - 1.2.5
+=== 1.2.2 - 1.2.6
 
 - Improved logging
 
