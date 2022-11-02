@@ -73,6 +73,19 @@ public class JdbcSimpleLock implements SimpleLock {
             return;
         }
 
+        if (log.isWarnEnabled()) {
+            long minutes = TimeUnit.MINUTES.convert(releaseAfter, timeUnit);
+            // Print a log message here in case client wants to hold the lock for too long. This might end up
+            // having the lock stuck in DB and never released (or released just after service restart only if
+            // configured so), as there will be a scheduled thread spawned to execute the release in the
+            // service node which acquired the lock initially
+            if (minutes >= 1L) {
+                log.warn("Holding a lock for too long might end up having your lock record stuck in database "
+                        + "and never released after e.g. service restart or crash. Currently you're about to "
+                        + "hold the lock for {} minute(s) or more.", minutes);
+            }
+        }
+
         log.debug("Lock will be released for token [{}] after [{}] {}", token,
                 releaseAfter,
                 timeUnit.toString().toLowerCase(Locale.ROOT));

@@ -37,15 +37,16 @@ public interface LockRunnableExecutor {
      * @param runnable given {@link Runnable} to execute with a distributed lock
      */
     default void executeLocked(Runnable runnable) {
-        executeLocked(runnable, 0L, TimeUnit.MILLISECONDS);
+        executeLocked(runnable, null, 0L, TimeUnit.MILLISECONDS);
     }
 
     /**
      * Execute the given {@link Runnable} with holding the lock for given milliseconds.
      *
      * @param runnable     given {@link Runnable} to execute with a distributed lock
+     * @param key          given lock key, optional
      * @param releaseAfter time period to release the lock afer
      * @param timeUnit     chosen {@link TimeUnit}
      */
-    void executeLocked(Runnable runnable, long releaseAfter, TimeUnit timeUnit);
+    void executeLocked(Runnable runnable, String key, long releaseAfter, TimeUnit timeUnit);
 }
