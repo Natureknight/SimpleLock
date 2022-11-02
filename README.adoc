@@ -83,6 +83,8 @@ public class MyJdbcLockedService {
      */
     public void doSomething(UUID id) {
         simpleLock.acquireForCurrentMethod(id.toString())
+                // IMPORTANT: lock has been acquired successfully only if the token is present,
+                // so make sure you have this check wrapping your service logic that needs to be locked
                 .ifPresent(token -> {
                     log.info("Some action executed concurrently for id={}", id);
 
