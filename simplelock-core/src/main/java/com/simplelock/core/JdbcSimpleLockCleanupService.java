@@ -28,7 +28,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * This service will clean up the existing entries from DB as per your configuration if
- * <pre>com.github.simplelock.jdbc.cleanup-on-startup</pre> set to {@literal true}
+ * <pre>simplelock.jdbc.cleanup-on-startup</pre> set to {@literal true}
  *
  * @since 1.2.0
  * @author Stanislav Dabov

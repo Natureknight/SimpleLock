@@ -42,7 +42,7 @@
 
     <groupId>com.github.natureknight</groupId>
     <artifactId>simplelock-parent</artifactId>
-    <version>1.2.6</version>
+    <version>1.2.7</version>
 
     <properties>
         <java.version>11</java.version>

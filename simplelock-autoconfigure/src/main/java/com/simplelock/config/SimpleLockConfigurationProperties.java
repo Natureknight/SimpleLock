@@ -29,7 +29,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ConfigurationProperties(prefix = "com.github.simplelock")
+@ConfigurationProperties(prefix = "simplelock")
 public class SimpleLockConfigurationProperties {
 
     /**

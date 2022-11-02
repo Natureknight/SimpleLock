@@ -47,7 +47,7 @@ import javax.sql.DataSource;
  * @since 1.0.0
  */
 @AutoConfiguration
-@ConditionalOnProperty(value = "com.github.simplelock.jdbc.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "simplelock.jdbc.enabled", havingValue = "true")
 @EnableConfigurationProperties(SimpleLockConfigurationProperties.class)
 @ConditionalOnClass(JdbcTemplate.class)
 public class SimpleJdbcLockAutoConfiguration {
@@ -77,7 +77,7 @@ public class SimpleJdbcLockAutoConfiguration {
     }
 
     @AutoConfiguration
-    @ConditionalOnProperty(value = "com.github.simplelock.jdbc.cleanup-on-startup", havingValue = "true")
+    @ConditionalOnProperty(value = "simplelock.jdbc.cleanup-on-startup", havingValue = "true")
     public static class JdbcLockCleanupConfiguration {
 
         @ConditionalOnMissingBean
@@ -92,7 +92,7 @@ public class SimpleJdbcLockAutoConfiguration {
      * Configuration for init DDL functionality.
      */
     @AutoConfiguration
-    @ConditionalOnProperty(value = "com.github.simplelock.jdbc.auto-generate-ddl", havingValue = "true")
+    @ConditionalOnProperty(value = "simplelock.jdbc.auto-generate-ddl", havingValue = "true")
     @ConditionalOnClass(DataSource.class)
     public static class SimpleJdbcLockInitConfiguration {
 

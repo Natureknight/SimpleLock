@@ -141,9 +141,9 @@ Project provides the following out-of-the-box `SimpleLock` implementations:
 |===
 | Property | Description | Default
 
-| `com.github.simplelock.jdbc.enabled` | Whether the JDBC lock is enabled (Default: `true`) | `true`
-| `com.github.simplelock.jdbc.auto-generate-ddl` | Whether to automatically create the DB object(s) | `true`
-| `com.github.simplelock.jdbc.cleanup-on-startup` | Whether to clean up DB if any existing locks are not released | false
+| `simplelock.jdbc.enabled` | Whether the JDBC lock is enabled (Default: `true`) | `true`
+| `simplelock.jdbc.auto-generate-ddl` | Whether to automatically create the DB object(s) | `true`
+| `simplelock.jdbc.cleanup-on-startup` | Whether to clean up DB if any existing locks are not released | false
 |===
 
 |===
@@ -174,7 +174,7 @@ Add the project dependency into your `pom.xml`
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
-    <version>1.2.6</version>
+    <version>1.2.7</version>
   </dependency>
 </dependencies>
 ----
@@ -194,7 +194,7 @@ repositories {
 Add the project dependency into your `build.gradle`
 [source,groovy]
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.2.6')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.2.7')
 ----
 
 === Compatibility
@@ -213,6 +213,10 @@ If you want to use custom lock implementations, simply implement `com.stanislav.
 You can also create an alias for your lock, so you don't have to specify `@SimpleJdbcLocked` type field.
 
 == Changelog
+
+=== 1.2.7
+
+- Update configuration properties by removing `com.github` prefix
 
 === 1.2.2 - 1.2.6
 
