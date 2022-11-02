@@ -21,35 +21,26 @@
 
 package com.simplelock.core;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
- * Enumeration holding the JDBC queries.
+ * This service will clean up the existing entries from DB as per your configuration if
+ * <pre>com.github.simplelock.jdbc.cleanup-on-startup</pre> set to {@literal true}
  *
+ * @since 1.2.0
  * @author Stanislav Dabov
- * @since 1.0.6
  */
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-enum JdbcSimpleLockQuery {
+@RequiredArgsConstructor
+@Slf4j
+public class JdbcSimpleLockCleanupService implements InitializingBean {
 
-    /**
-     * Query to acquire the lock. Could fail with UK constraint violation on `lock_key` column.
-     */
-    ACQUIRE("INSERT INTO simple_lock (id, lock_key, token) VALUES (?, ?, ?)"),
+    private final JdbcTemplate jdbcTemplate;
 
-    /**
-     * Release the lock by given token, which is the result from acquire operation.
-     */
-    RELEASE("DELETE FROM simple_lock WHERE token = ?"),
-
-    /**
-     * Delete all locks on service startup.
-     */
-    TRUNCATE("TRUNCATE TABLE simple_lock"),
-    ;
-
-    @Getter
-    private final String query;
+    @Override
+    public void afterPropertiesSet() {
+        jdbcTemplate.update(JdbcSimpleLockQuery.TRUNCATE.getQuery());
+    }
 }

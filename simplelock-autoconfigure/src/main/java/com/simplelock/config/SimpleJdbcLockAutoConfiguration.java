@@ -24,11 +24,15 @@ package com.simplelock.config;
 import com.simplelock.api.LockRunnableExecutor;
 import com.simplelock.api.SimpleLock;
 import com.simplelock.core.JdbcSimpleLock;
+import com.simplelock.core.JdbcSimpleLockCleanupService;
 import com.simplelock.core.JdbcSimpleLockRunnableExecutor;
 import com.simplelock.core.SimpleJdbcLockedAspect;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,17 +42,22 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import javax.sql.DataSource;
 
 /**
- * Autoconfiguration for {@link SimpleLock} default impl {@link JdbcSimpleLock}
+ * Autoconfiguration for {@link SimpleLock} default implementation {@link JdbcSimpleLock}
  *
  * @author Stanislav Dabov
  * @since 1.0.0
  */
 @AutoConfiguration
+@ConditionalOnProperty(value = "com.github.simplelock.jdbc.enabled", havingValue = "true")
+@EnableConfigurationProperties(SimpleLockConfigurationProperties.class)
 @ConditionalOnClass(JdbcTemplate.class)
+@RequiredArgsConstructor
 public class SimpleJdbcLockAutoConfiguration {
 
+    private final SimpleLockConfigurationProperties properties;
+
     @Bean
-    public SimpleJdbcLockedAspect simpleJdbcLockedAspect(SimpleLock simpleLock) {
+    public SimpleJdbcLockedAspect simpleJdbcLockedAspect(final SimpleLock simpleLock) {
         return new SimpleJdbcLockedAspect(simpleLock);
     }
 
@@ -60,14 +69,26 @@ public class SimpleJdbcLockAutoConfiguration {
 
         @ConditionalOnMissingBean
         @Bean
-        public SimpleLock simpleLock(JdbcTemplate jdbcTemplate) {
+        public SimpleLock simpleLock(final JdbcTemplate jdbcTemplate) {
             return new JdbcSimpleLock(jdbcTemplate);
         }
 
         @ConditionalOnMissingBean
         @Bean
-        public LockRunnableExecutor lockRunnableExecutor(SimpleLock simpleLock) {
+        public LockRunnableExecutor lockRunnableExecutor(final SimpleLock simpleLock) {
             return new JdbcSimpleLockRunnableExecutor(simpleLock);
+        }
+    }
+
+    @AutoConfiguration
+    @ConditionalOnProperty(value = "com.github.simplelock.jdbc.cleanup-on-startup", havingValue = "true")
+    public static class JdbcLockCleanupConfiguration {
+
+        @ConditionalOnMissingBean
+        @Bean
+        public JdbcSimpleLockCleanupService jdbcSimpleLockCleanupService(
+                final JdbcTemplate jdbcTemplate) {
+            return new JdbcSimpleLockCleanupService(jdbcTemplate);
         }
     }
 
@@ -75,10 +96,12 @@ public class SimpleJdbcLockAutoConfiguration {
      * Configuration for init DDL functionality.
      */
     @AutoConfiguration
+    @ConditionalOnProperty(value = "com.github.simplelock.jdbc.auto-generate-ddl", havingValue = "true")
+    @ConditionalOnClass(DataSource.class)
     public static class SimpleJdbcLockInitConfiguration {
 
         @Bean
-        public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
+        public DataSourceInitializer dataSourceInitializer(final DataSource dataSource) {
             ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
 
             resourceDatabasePopulator.addScript(new ClassPathResource("/sql/simple_lock.sql"));
