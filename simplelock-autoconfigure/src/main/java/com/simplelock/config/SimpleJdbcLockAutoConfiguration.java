@@ -27,7 +27,6 @@ import com.simplelock.core.JdbcSimpleLock;
 import com.simplelock.core.JdbcSimpleLockCleanupService;
 import com.simplelock.core.JdbcSimpleLockRunnableExecutor;
 import com.simplelock.core.SimpleJdbcLockedAspect;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -51,10 +50,7 @@ import javax.sql.DataSource;
 @ConditionalOnProperty(value = "com.github.simplelock.jdbc.enabled", havingValue = "true")
 @EnableConfigurationProperties(SimpleLockConfigurationProperties.class)
 @ConditionalOnClass(JdbcTemplate.class)
-@RequiredArgsConstructor
 public class SimpleJdbcLockAutoConfiguration {
-
-    private final SimpleLockConfigurationProperties properties;
 
     @Bean
     public SimpleJdbcLockedAspect simpleJdbcLockedAspect(final SimpleLock simpleLock) {

@@ -30,6 +30,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This aspect will inject the behaviour of acquiring the lock before the annotated method and
@@ -53,6 +54,20 @@ public class SimpleJdbcLockedAspect {
 
         log.debug("Intercepted method [{}] annotated with [{}]", signature.getMethod().getName(),
                 SimpleJdbcLocked.class.getSimpleName());
+
+        // Print a log message here in case client wants to hold the lock for too long. This might end up
+        // having the lock stuck in DB and never released (or released just after service restart only if
+        // configured so), as there will be a scheduled thread spawned to execute the release in the
+        // service node which acquired the lock initially
+        if (log.isWarnEnabled()) {
+            long minutes = annotation.timeUnit().convert(annotation.releaseAfter(), TimeUnit.MINUTES);
+
+            if (minutes > 1L) {
+                log.warn("Holding a lock for too long might end up having your lock record stuck in database "
+                        + "and never released after e.g. service restart or crash. Currently you're about to "
+                        + "hold the lock for more than {} minute(s).", minutes);
+            }
+        }
 
         Optional<String> tokenOptional = Optional.empty();
         Object result = null;

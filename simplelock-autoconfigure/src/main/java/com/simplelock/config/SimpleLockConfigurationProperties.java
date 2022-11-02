@@ -50,6 +50,8 @@ public class SimpleLockConfigurationProperties {
 
         /**
          * Whether to clean up the existing locks on service startup/restart.
+         * Use this property in order to prevent some actions that has been done concurrently during multi-node
+         * deployments for example
          * Default: false
          */
         private boolean cleanupOnStartup = false;
