@@ -87,8 +87,7 @@ Method might not acquire the lock if:
 
 Project provides the following out-of-the-box `SimpleLock` implementations:
 
-* JDBC
-- JdbcSimpleLock
+* JDBC (`JdbcSimpleLock`)
 
 === Configuration properties
 
