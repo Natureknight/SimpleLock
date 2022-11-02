@@ -102,8 +102,8 @@ public class JdbcSimpleLock implements SimpleLock {
     private static String constructLockKey(String key) {
         var stackTrace = Thread.currentThread().getStackTrace();
         // just to be safe
-        if (stackTrace.length >= 3) {
-            return stackTrace[2].getMethodName() + "-" + key;
+        if (stackTrace.length >= 4) {
+            return stackTrace[3].getMethodName() + "-" + key;
         }
 
         return key;
