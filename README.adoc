@@ -90,7 +90,7 @@ public class MyJdbcLockedService {
 
                     // IMPORTANT: Don't forget to release your lock after execution, unless
                     // your requirement is to have it locked forever for some reason
-                    simpleLock.release(token, 10L, TimeUnit.SECONDS);
+                    simpleLock.release(token);
                 });
     }
 }
