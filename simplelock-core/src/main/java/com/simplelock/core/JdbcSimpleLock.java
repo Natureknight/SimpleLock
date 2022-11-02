@@ -66,6 +66,11 @@ public class JdbcSimpleLock implements SimpleLock {
     }
 
     @Override
+    public Optional<String> acquireForCurrentMethod(String key) {
+        return acquire(constructLockKey(key));
+    }
+
+    @Override
     public void release(String token, long releaseAfter, TimeUnit timeUnit) {
         if (releaseAfter == 0L || timeUnit == null) {
             log.debug("Lock for token [{}] will be released immediately", token);
@@ -92,5 +97,15 @@ public class JdbcSimpleLock implements SimpleLock {
 
         newSingleThreadScheduledExecutor().schedule(() -> jdbcTemplate.update(RELEASE.getQuery(), token),
                 releaseAfter, timeUnit);
+    }
+
+    private static String constructLockKey(String key) {
+        var stackTrace = Thread.currentThread().getStackTrace();
+        // just to be safe
+        if (stackTrace.length >= 3) {
+            return stackTrace[2].getMethodName() + "-" + key;
+        }
+
+        return key;
     }
 }

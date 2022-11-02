@@ -34,12 +34,23 @@ import java.util.concurrent.TimeUnit;
 public interface SimpleLock {
 
     /**
-     * Acquire the lock and return unique token as {@link java.util.UUID UUID} to be used for unlocking later on.
+     * Acquire the lock and return unique token as {@link java.util.UUID UUID} to be used for
+     * releasing the lock later on.
      *
      * @param key given unique key of the lock.
      * @return the lock token
      */
     Optional<String> acquire(String key);
+
+    /**
+     * Similar to {@link SimpleLock#acquire(String)}, but will also include the current method name
+     * in the key so same unique key could be used, but it will behave like a different lock
+     * if invoked from different methods.
+     *
+     * @param key given unique key suffix of the lock
+     * @return the lock token
+     */
+    Optional<String> acquireForCurrentMethod(String key);
 
     /**
      * Release the lock immediately by given token

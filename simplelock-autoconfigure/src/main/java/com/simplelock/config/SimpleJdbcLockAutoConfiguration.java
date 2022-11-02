@@ -21,11 +21,9 @@
 
 package com.simplelock.config;
 
-import com.simplelock.api.LockRunnableExecutor;
 import com.simplelock.api.SimpleLock;
 import com.simplelock.core.JdbcSimpleLock;
 import com.simplelock.core.JdbcSimpleLockCleanupService;
-import com.simplelock.core.JdbcSimpleLockRunnableExecutor;
 import com.simplelock.core.SimpleJdbcLockedAspect;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -57,23 +55,10 @@ public class SimpleJdbcLockAutoConfiguration {
         return new SimpleJdbcLockedAspect(simpleLock);
     }
 
-    /**
-     * Configuration for default implementation of APIs.
-     */
-    @AutoConfiguration
-    public static class SimpleJdbcLockDefaultConfiguration {
-
-        @ConditionalOnMissingBean
-        @Bean
-        public SimpleLock simpleLock(final JdbcTemplate jdbcTemplate) {
-            return new JdbcSimpleLock(jdbcTemplate);
-        }
-
-        @ConditionalOnMissingBean
-        @Bean
-        public LockRunnableExecutor lockRunnableExecutor(final SimpleLock simpleLock) {
-            return new JdbcSimpleLockRunnableExecutor(simpleLock);
-        }
+    @ConditionalOnMissingBean
+    @Bean
+    public SimpleLock simpleLock(final JdbcTemplate jdbcTemplate) {
+        return new JdbcSimpleLock(jdbcTemplate);
     }
 
     @AutoConfiguration
