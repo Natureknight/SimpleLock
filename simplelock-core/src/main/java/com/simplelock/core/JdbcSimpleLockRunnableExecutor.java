@@ -46,7 +46,9 @@ public class JdbcSimpleLockRunnableExecutor implements LockRunnableExecutor {
         Optional<String> tokenOptional = Optional.empty();
         try {
             tokenOptional = simpleLock.acquire(UNIQUE_KEY);
-            runnable.run();
+            if (tokenOptional.isPresent()) {
+                runnable.run();
+            }
         } finally {
             tokenOptional.ifPresent(token -> simpleLock.release(token, releaseAfter, timeUnit));
         }

@@ -55,10 +55,12 @@ public class SimpleJdbcLockedAspect {
                 SimpleJdbcLocked.class.getSimpleName());
 
         Optional<String> tokenOptional = Optional.empty();
-        Object result;
+        Object result = null;
         try {
             tokenOptional = simpleLock.acquire(signature.getMethod().getName());
-            result = joinPoint.proceed();
+            if (tokenOptional.isPresent()) {
+                result = joinPoint.proceed();
+            }
         } finally {
             tokenOptional.ifPresent(token -> simpleLock.release(token,
                     annotation.releaseAfter(),
