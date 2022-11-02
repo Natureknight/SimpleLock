@@ -42,5 +42,6 @@ public class JdbcSimpleLockCleanupService implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         jdbcTemplate.update(JdbcSimpleLockQuery.TRUNCATE.getQuery());
+        log.debug("Database table [simple_lock] truncated");
     }
 }
