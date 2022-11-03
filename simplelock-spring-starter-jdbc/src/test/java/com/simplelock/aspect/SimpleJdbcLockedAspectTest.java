@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.annotation.DirtiesContext;
@@ -90,16 +89,12 @@ public class SimpleJdbcLockedAspectTest extends BaseSimpleLockTest {
         }
     }
 
-    @TestConfiguration
-    static class AspectTestConfiguration {
+    @SpringBootApplication
+    static class TestApplication {
 
         @Bean
         public DummyClassUsingAspect dummyClassUsingAspect() {
             return new DummyClassUsingAspect();
         }
-    }
-
-    @SpringBootApplication
-    static class TestApplication {
     }
 }

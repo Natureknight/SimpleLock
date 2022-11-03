@@ -46,14 +46,14 @@ import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @TestPropertySource(properties = {
-        "spring.datasource.url=jdbc:h2:mem:demo;MODE=MySQL",
+        "spring.datasource.url=jdbc:h2:mem:demo",
         "simplelock.jdbc.enabled=true",
         "simplelock.jdbc.cleanup-on-startup=true",
         "simplelock.jdbc.auto-generate-ddl=true"
 })
 @Sql(statements = "TRUNCATE TABLE simple_lock", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @DirtiesContext
-public class JdbcSimpleLockTest extends BaseSimpleLockTest {
+public abstract class JdbcSimpleLockTest extends BaseSimpleLockTest {
 
     @Autowired
     private SimpleLock simpleLock;
@@ -98,11 +98,11 @@ public class JdbcSimpleLockTest extends BaseSimpleLockTest {
             String token = simpleLock.acquire(UNIQUE_KEY).orElseThrow();
 
             // then
-            SimpleLockRow result = getSimpleLockRow(SELECT_QUERY);
+            SimpleLockRow result = getSimpleLockRow();
             assertNotNull(result);
             simpleLock.release(token, 0L, TimeUnit.MILLISECONDS);
             assertThrows(EmptyResultDataAccessException.class,
-                    () -> getSimpleLockRow(SELECT_QUERY));
+                    JdbcSimpleLockTest.this::getSimpleLockRow);
         }
 
         @DisplayName("Acquire and release the lock with delay, should delete lock record from DB after the delay")
@@ -112,18 +112,18 @@ public class JdbcSimpleLockTest extends BaseSimpleLockTest {
             String token = simpleLock.acquire(UNIQUE_KEY).orElseThrow();
 
             // then - release with 100 ms delay
-            SimpleLockRow result = getSimpleLockRow(SELECT_QUERY);
+            SimpleLockRow result = getSimpleLockRow();
             assertNotNull(result);
             assertEquals(token, result.getToken());
 
             simpleLock.release(token, 100L, TimeUnit.MILLISECONDS);
-            result = getSimpleLockRow(SELECT_QUERY);
+            result = getSimpleLockRow();
             assertNotNull(result);
             assertEquals(token, result.getToken());
             Thread.sleep(500);
             // select after some time, should not have records
             assertThrows(EmptyResultDataAccessException.class,
-                    () -> getSimpleLockRow(SELECT_QUERY));
+                    JdbcSimpleLockTest.this::getSimpleLockRow);
         }
     }
 

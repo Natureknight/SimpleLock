@@ -19,35 +19,15 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.jdbc;
+package com.simplelock.jdbc.oracle;
 
-import com.simplelock.common.BaseSimpleLockTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.simplelock.jdbc.JdbcSimpleLockTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 @SpringBootTest
-@TestPropertySource(properties = {
-        "spring.datasource.url=jdbc:h2:mem:demo",
-        "simplelock.jdbc.enabled=true",
-        "simplelock.jdbc.cleanup-on-startup=true",
-        "simplelock.jdbc.auto-generate-ddl=true"
-})
+@TestPropertySource(properties = {"spring.datasource.url=jdbc:h2:mem:demo;MODE=Oracle"})
 @DirtiesContext
-public class JdbcSimpleLockCleanupServiceTest extends BaseSimpleLockTest {
-
-    @Autowired
-    private JdbcSimpleLockCleanupService instance;
-
-    @DisplayName("When context loads, cleanup service should truncate the DB lock table")
-    @Test
-    void contextLoads_cleanupOnStartupEnabled() {
-        verify(jdbcTemplate, times(1)).update(JdbcSimpleLockQuery.TRUNCATE.getQuery());
-    }
+public class OracleSimpleLockTest extends JdbcSimpleLockTest {
 }

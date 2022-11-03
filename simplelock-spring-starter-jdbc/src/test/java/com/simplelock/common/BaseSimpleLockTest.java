@@ -29,7 +29,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-public class BaseSimpleLockTest {
+public abstract class BaseSimpleLockTest {
 
     protected static final String SELECT_QUERY = "SELECT * FROM simple_lock";
     protected static final String UNIQUE_KEY = "unique-key";
@@ -43,8 +43,8 @@ public class BaseSimpleLockTest {
             .token(rs.getString(3))
             .build();
 
-    protected SimpleLockRow getSimpleLockRow(String query) {
-        return jdbcTemplate.queryForObject(query, rowMapper);
+    protected SimpleLockRow getSimpleLockRow() {
+        return jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
     }
 
     @NoArgsConstructor
