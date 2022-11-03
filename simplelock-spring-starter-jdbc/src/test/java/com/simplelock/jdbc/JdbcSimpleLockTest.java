@@ -94,11 +94,11 @@ public class JdbcSimpleLockTest extends BaseSimpleLockTest {
             String token = simpleLock.acquire(UNIQUE_KEY).orElseThrow();
 
             // then
-            SimpleLockRow result = getSimpleLockRow();
+            SimpleLockRow result = getSimpleLockRow(SELECT_QUERY);
             assertNotNull(result);
-            simpleLock.release(token);
-            result = getSimpleLockRow();
-            assertNotNull(result);
+            simpleLock.release(token, 0L, TimeUnit.MILLISECONDS);
+            assertThrows(EmptyResultDataAccessException.class,
+                    () -> getSimpleLockRow(SELECT_QUERY));
         }
 
         @Test
@@ -107,19 +107,18 @@ public class JdbcSimpleLockTest extends BaseSimpleLockTest {
             String token = simpleLock.acquire(UNIQUE_KEY).orElseThrow();
 
             // then - release with 100 ms delay
-            SimpleLockRow result = getSimpleLockRow();
+            SimpleLockRow result = getSimpleLockRow(SELECT_QUERY);
             assertNotNull(result);
             assertEquals(token, result.getToken());
 
             simpleLock.release(token, 100L, TimeUnit.MILLISECONDS);
-            // select after release schedule
-            result = getSimpleLockRow();
+            result = getSimpleLockRow(SELECT_QUERY);
             assertNotNull(result);
             assertEquals(token, result.getToken());
-
             Thread.sleep(500);
             // select after some time, should not have records
-            assertThrows(EmptyResultDataAccessException.class, JdbcSimpleLockTest.this::getSimpleLockRow);
+            assertThrows(EmptyResultDataAccessException.class,
+                    () -> getSimpleLockRow(SELECT_QUERY));
         }
     }
 

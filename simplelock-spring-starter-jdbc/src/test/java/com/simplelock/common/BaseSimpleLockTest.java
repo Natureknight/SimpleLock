@@ -43,8 +43,8 @@ public class BaseSimpleLockTest {
             .token(rs.getString(3))
             .build();
 
-    protected SimpleLockRow getSimpleLockRow() {
-        return jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
+    protected SimpleLockRow getSimpleLockRow(String query) {
+        return jdbcTemplate.queryForObject(query, rowMapper);
     }
 
     @NoArgsConstructor

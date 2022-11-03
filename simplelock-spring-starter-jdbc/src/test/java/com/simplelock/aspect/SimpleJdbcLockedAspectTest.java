@@ -61,6 +61,7 @@ public class SimpleJdbcLockedAspectTest extends BaseSimpleLockTest {
 
         // then
         verify(simpleLock, times(1)).acquireForCurrentMethod("lockedMethod");
+        verify(simpleLock, times(1)).release(anyString(), eq(10L), eq(TimeUnit.SECONDS));
     }
 
     @Test
