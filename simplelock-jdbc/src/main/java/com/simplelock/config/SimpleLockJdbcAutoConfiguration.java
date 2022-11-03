@@ -46,9 +46,9 @@ import javax.sql.DataSource;
  */
 @AutoConfiguration
 @ConditionalOnProperty(value = "simplelock.jdbc.enabled", havingValue = "true")
-@EnableConfigurationProperties(SimpleLockConfigurationProperties.class)
+@EnableConfigurationProperties(SimpleLockJdbcConfigurationProperties.class)
 @ConditionalOnClass(JdbcTemplate.class)
-public class SimpleJdbcLockAutoConfiguration {
+public class SimpleLockJdbcAutoConfiguration {
 
     @Bean
     public SimpleJdbcLockedAspect simpleJdbcLockedAspect(final SimpleLock simpleLock) {

@@ -26,7 +26,7 @@
     <parent>
         <artifactId>simplelock-parent</artifactId>
         <groupId>com.github.natureknight</groupId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -35,7 +35,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.natureknight</groupId>
-            <artifactId>simplelock-autoconfigure</artifactId>
+            <artifactId>simplelock-jdbc</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
