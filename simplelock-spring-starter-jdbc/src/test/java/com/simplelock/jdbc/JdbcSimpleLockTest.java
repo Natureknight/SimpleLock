@@ -23,6 +23,7 @@ package com.simplelock.jdbc;
 
 import com.simplelock.api.SimpleLock;
 import com.simplelock.common.BaseSimpleLockTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,7 @@ public class JdbcSimpleLockTest extends BaseSimpleLockTest {
     @Nested
     class AcquireLockTests {
 
+        @DisplayName("Acquire lock should return optional with token")
         @Test
         void acquireLockOnce_shouldReturnOptionalWithToken() {
             // when
@@ -71,6 +73,7 @@ public class JdbcSimpleLockTest extends BaseSimpleLockTest {
                     anyString(), eq(UNIQUE_KEY), eq(tokenOptional.get()));
         }
 
+        @DisplayName("Acquire lock twice for the same key won't return token for the second attempt")
         @Test
         void acquireLockTwice_shouldReturnEmptyOptionalForSecondInvocation() {
             // when
@@ -88,6 +91,7 @@ public class JdbcSimpleLockTest extends BaseSimpleLockTest {
     @Nested
     class ReleaseLockTests {
 
+        @DisplayName("Acquire and instantly release the lock, should delete lock record from DB")
         @Test
         void instantReleaseLock_successful() {
             // when
@@ -101,6 +105,7 @@ public class JdbcSimpleLockTest extends BaseSimpleLockTest {
                     () -> getSimpleLockRow(SELECT_QUERY));
         }
 
+        @DisplayName("Acquire and release the lock with delay, should delete lock record from DB after the delay")
         @Test
         void releaseLockWithDelay_successful() throws InterruptedException {
             // when

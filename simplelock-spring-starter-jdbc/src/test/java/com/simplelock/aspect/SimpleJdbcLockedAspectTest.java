@@ -23,6 +23,7 @@ package com.simplelock.aspect;
 
 import com.simplelock.api.SimpleLock;
 import com.simplelock.common.BaseSimpleLockTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -54,6 +55,7 @@ public class SimpleJdbcLockedAspectTest extends BaseSimpleLockTest {
     @SpyBean
     private SimpleLock simpleLock;
 
+    @DisplayName("Verify default values for releaseAfter and timeUnit for lock aspect")
     @Test
     void verifyAnnotatedMethod_acquireLockWithDefaultReleaseDelay() throws InterruptedException {
         // when
@@ -64,6 +66,7 @@ public class SimpleJdbcLockedAspectTest extends BaseSimpleLockTest {
         verify(simpleLock, times(1)).release(anyString(), eq(10L), eq(TimeUnit.SECONDS));
     }
 
+    @DisplayName("Acquire lock with custom delay should release the lock after the delay have passed")
     @Test
     void verifyAnnotatedMethod_acquireLockWithCustomReleaseDelay() throws InterruptedException {
         // when

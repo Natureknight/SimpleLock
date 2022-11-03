@@ -22,6 +22,7 @@
 package com.simplelock.jdbc;
 
 import com.simplelock.common.BaseSimpleLockTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,6 +45,7 @@ public class JdbcSimpleLockCleanupServiceTest extends BaseSimpleLockTest {
     @Autowired
     private JdbcSimpleLockCleanupService instance;
 
+    @DisplayName("When context loads, cleanup service should truncate the DB lock table")
     @Test
     void contextLoads_cleanupOnStartupEnabled() {
         verify(jdbcTemplate, times(1)).update(JdbcSimpleLockQuery.TRUNCATE.getQuery());
