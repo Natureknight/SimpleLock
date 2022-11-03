@@ -19,37 +19,42 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.jdbc;
+package com.simplelock.common;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
-/**
- * Enumeration holding the JDBC queries.
- *
- * @author Stanislav Dabov
- * @since 1.0.6
- */
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public enum JdbcSimpleLockQuery {
+public class BaseSimpleLockTest {
 
-    /**
-     * Query to acquire the lock. Could fail with UK constraint violation on `lock_key` column.
-     */
-    ACQUIRE("INSERT INTO simple_lock (id, lock_key, token) VALUES (?, ?, ?)"),
+    protected static final String SELECT_QUERY = "SELECT * FROM simple_lock";
+    protected static final String UNIQUE_KEY = "unique-key";
 
-    /**
-     * Release the lock by given token, which is the result from acquire operation.
-     */
-    RELEASE("DELETE FROM simple_lock WHERE token = ?"),
+    @SpyBean
+    protected JdbcTemplate jdbcTemplate;
 
-    /**
-     * Delete all locks on service startup.
-     */
-    TRUNCATE("TRUNCATE TABLE simple_lock"),
-    ;
+    protected final RowMapper<SimpleLockRow> rowMapper = (rs, rowNum) -> SimpleLockRow.builder()
+            .id(rs.getString(1))
+            .lockKey(rs.getString(2))
+            .token(rs.getString(3))
+            .build();
 
-    @Getter
-    private final String query;
+    protected SimpleLockRow getSimpleLockRow() {
+        return jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    @Builder
+    protected static class SimpleLockRow {
+
+        private String id;
+        private String lockKey;
+        private String token;
+    }
 }

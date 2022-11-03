@@ -21,35 +21,31 @@
 
 package com.simplelock.jdbc;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.simplelock.common.BaseSimpleLockTest;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 
-/**
- * Enumeration holding the JDBC queries.
- *
- * @author Stanislav Dabov
- * @since 1.0.6
- */
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public enum JdbcSimpleLockQuery {
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-    /**
-     * Query to acquire the lock. Could fail with UK constraint violation on `lock_key` column.
-     */
-    ACQUIRE("INSERT INTO simple_lock (id, lock_key, token) VALUES (?, ?, ?)"),
+@SpringBootTest
+@TestPropertySource(properties = {
+        "spring.datasource.url=jdbc:h2:mem:demo;MODE=MySQL",
+        "simplelock.jdbc.enabled=true",
+        "simplelock.jdbc.cleanup-on-startup=true",
+        "simplelock.jdbc.auto-generate-ddl=true"
+})
+@DirtiesContext
+public class JdbcSimpleLockCleanupServiceTest extends BaseSimpleLockTest {
 
-    /**
-     * Release the lock by given token, which is the result from acquire operation.
-     */
-    RELEASE("DELETE FROM simple_lock WHERE token = ?"),
+    @Autowired
+    private JdbcSimpleLockCleanupService instance;
 
-    /**
-     * Delete all locks on service startup.
-     */
-    TRUNCATE("TRUNCATE TABLE simple_lock"),
-    ;
-
-    @Getter
-    private final String query;
+    @Test
+    void contextLoads_cleanupOnStartupEnabled() {
+        verify(jdbcTemplate, times(1)).update(JdbcSimpleLockQuery.TRUNCATE.getQuery());
+    }
 }
