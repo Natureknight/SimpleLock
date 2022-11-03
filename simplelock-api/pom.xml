@@ -26,7 +26,7 @@
     <parent>
         <artifactId>simplelock-parent</artifactId>
         <groupId>com.github.natureknight</groupId>
-        <version>1.3.1</version>
+        <version>1.4.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

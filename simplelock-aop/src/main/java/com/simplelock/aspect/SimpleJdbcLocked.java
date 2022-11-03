@@ -19,37 +19,30 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.core;
+package com.simplelock.aspect;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.lang.annotation.*;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Enumeration holding the JDBC queries.
+ * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking.
  *
+ * @see SimpleJdbcLockedAspect
  * @author Stanislav Dabov
- * @since 1.0.6
+ * @since 1.0.0
  */
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-enum JdbcSimpleLockQuery {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface SimpleJdbcLocked {
 
     /**
-     * Query to acquire the lock. Could fail with UK constraint violation on `lock_key` column.
+     * @return the period to hold the lock for.
      */
-    ACQUIRE("INSERT INTO simple_lock (id, lock_key, token) VALUES (?, ?, ?)"),
+    long releaseAfter() default 10L;
 
     /**
-     * Release the lock by given token, which is the result from acquire operation.
+     * @return the chosen {@link TimeUnit}
      */
-    RELEASE("DELETE FROM simple_lock WHERE token = ?"),
-
-    /**
-     * Delete all locks on service startup.
-     */
-    TRUNCATE("TRUNCATE TABLE simple_lock"),
-    ;
-
-    @Getter
-    private final String query;
+    TimeUnit timeUnit() default TimeUnit.SECONDS;
 }

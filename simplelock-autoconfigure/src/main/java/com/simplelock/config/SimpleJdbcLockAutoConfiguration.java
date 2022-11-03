@@ -22,9 +22,9 @@
 package com.simplelock.config;
 
 import com.simplelock.api.SimpleLock;
-import com.simplelock.core.JdbcSimpleLock;
-import com.simplelock.core.JdbcSimpleLockCleanupService;
-import com.simplelock.core.SimpleJdbcLockedAspect;
+import com.simplelock.aspect.SimpleJdbcLockedAspect;
+import com.simplelock.jdbc.JdbcSimpleLock;
+import com.simplelock.jdbc.JdbcSimpleLockCleanupService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

@@ -19,7 +19,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.core;
+package com.simplelock.aspect;
 
 import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,7 @@ public class SimpleJdbcLockedAspect {
 
     private final SimpleLock simpleLock;
 
-    @Around("@annotation(com.simplelock.core.SimpleJdbcLocked)")
+    @Around("@annotation(SimpleJdbcLocked)")
     public Object intercept(ProceedingJoinPoint joinPoint) throws Throwable {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -54,16 +54,14 @@ public class SimpleJdbcLockedAspect {
         log.debug("Intercepted method [{}] annotated with [{}]", signature.getMethod().getName(),
                 SimpleJdbcLocked.class.getSimpleName());
 
-        Optional<String> tokenOptional = Optional.empty();
+        Optional<String> tokenOptional = simpleLock.acquireForCurrentMethod(
+                signature.getMethod().getName());
+
         Object result = null;
-        try {
-            tokenOptional = simpleLock.acquire(signature.getMethod().getName());
-            if (tokenOptional.isPresent()) {
-                result = joinPoint.proceed();
-            }
-        } finally {
-            tokenOptional.ifPresent(token -> simpleLock.release(
-                    token, annotation.releaseAfter(), annotation.timeUnit()));
+        if (tokenOptional.isPresent()) {
+            // proceed with execution if lock successfully acquired
+            result = joinPoint.proceed();
+            simpleLock.release(tokenOptional.get(), annotation.releaseAfter(), annotation.timeUnit());
         }
 
         return result;

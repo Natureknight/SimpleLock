@@ -58,7 +58,7 @@ public interface SimpleLock {
      * @param token given token
      */
     default void release(String token) {
-        release(token, 0L, null);
+        release(token, 10L, TimeUnit.SECONDS);
     }
 
     /**

@@ -19,7 +19,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.core;
+package com.simplelock.jdbc;
 
 import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +32,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.simplelock.core.JdbcSimpleLockQuery.ACQUIRE;
-import static com.simplelock.core.JdbcSimpleLockQuery.RELEASE;
+import static com.simplelock.jdbc.JdbcSimpleLockQuery.ACQUIRE;
+import static com.simplelock.jdbc.JdbcSimpleLockQuery.RELEASE;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 /**
@@ -72,7 +72,7 @@ public class JdbcSimpleLock implements SimpleLock {
 
     @Override
     public void release(String token, long releaseAfter, TimeUnit timeUnit) {
-        if (releaseAfter == 0L || timeUnit == null) {
+        if (releaseAfter == 0L) {
             log.debug("Lock for token [{}] will be released immediately", token);
             jdbcTemplate.update(RELEASE.getQuery(), token);
             return;
