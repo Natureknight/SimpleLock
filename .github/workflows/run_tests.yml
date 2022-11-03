@@ -2,6 +2,8 @@ name: Tests with Maven
 
 on:
   push:
+    tags-ignore:
+      - '*'
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
