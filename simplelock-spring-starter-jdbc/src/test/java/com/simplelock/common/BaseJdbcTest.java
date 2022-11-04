@@ -26,10 +26,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
-public abstract class BaseSimpleLockTest {
+import java.util.concurrent.Callable;
+
+@Sql(statements = "TRUNCATE TABLE simple_lock", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@DirtiesContext
+public abstract class BaseJdbcTest {
 
     protected static final String SELECT_QUERY = "SELECT * FROM simple_lock";
     protected static final String UNIQUE_KEY = "unique-key";
@@ -43,8 +50,18 @@ public abstract class BaseSimpleLockTest {
             .token(rs.getString(3))
             .build();
 
-    protected SimpleLockRow getSimpleLockRow() {
-        return jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
+    protected Callable<Boolean> lockReleased() {
+        return () -> {
+            try {
+                jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
+            } catch (EmptyResultDataAccessException ex) {
+                // if the select query return empty result, then
+                // we know that the lock has been released
+                return true;
+            }
+
+            return false;
+        };
     }
 
     @NoArgsConstructor

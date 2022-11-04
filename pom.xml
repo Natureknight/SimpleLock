@@ -41,7 +41,7 @@
 
     <groupId>com.github.natureknight</groupId>
     <artifactId>simplelock-parent</artifactId>
-    <version>1.5.4</version>
+    <version>1.5.5</version>
 
     <properties>
         <java.version>11</java.version>

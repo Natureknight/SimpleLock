@@ -22,7 +22,7 @@
 package com.simplelock.aspect;
 
 import com.simplelock.api.SimpleLock;
-import com.simplelock.common.BaseSimpleLockTest;
+import com.simplelock.common.BaseJdbcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,23 +30,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 
 import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@TestPropertySource(properties = {
+@SpringBootTest(properties = {
         "spring.datasource.url=jdbc:h2:mem:demo;MODE=MySQL",
         "simplelock.jdbc.enabled=true",
         "simplelock.jdbc.auto-generate-ddl=true"
 })
-@DirtiesContext
-public class SimpleJdbcLockedAspectTest extends BaseSimpleLockTest {
+public class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
 
     @Autowired
     private DummyClassUsingAspect dummyClassUsingAspect;
@@ -56,7 +53,7 @@ public class SimpleJdbcLockedAspectTest extends BaseSimpleLockTest {
 
     @DisplayName("Verify default values for releaseAfter and timeUnit for lock aspect")
     @Test
-    void verifyAnnotatedMethod_acquireLockWithDefaultReleaseDelay() throws InterruptedException {
+    void verifyAnnotatedMethod_acquireLockWithDefaultReleaseDelay() {
         // when
         dummyClassUsingAspect.lockedMethod();
 
@@ -65,17 +62,16 @@ public class SimpleJdbcLockedAspectTest extends BaseSimpleLockTest {
         verify(simpleLock, times(1)).release(anyString(), eq(10L), eq(TimeUnit.SECONDS));
     }
 
-    @DisplayName("Acquire lock with custom delay should release the lock after the delay have passed")
+    @DisplayName("Acquire lock with 100ms release delay should release the lock after the delay have passed")
     @Test
-    void verifyAnnotatedMethod_acquireLockWithCustomReleaseDelay() throws InterruptedException {
+    void verifyAnnotatedMethod_acquireLockWithCustomReleaseDelay() {
         // when
         dummyClassUsingAspect.lockedMethodWithCustomReleaseDelay();
 
         // then
         verify(simpleLock, times(1)).acquireForCurrentMethod("lockedMethodWithCustomReleaseDelay");
         verify(simpleLock, never()).release(anyString(), anyInt(), any(TimeUnit.class));
-        Thread.sleep(500);
-        verify(simpleLock, times(1)).release(anyString(), eq(100L), eq(TimeUnit.MILLISECONDS));
+        await().atLeast(100L, TimeUnit.MILLISECONDS).until(lockReleased());
     }
 
     static class DummyClassUsingAspect {

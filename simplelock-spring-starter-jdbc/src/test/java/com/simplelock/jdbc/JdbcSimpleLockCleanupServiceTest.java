@@ -21,31 +21,23 @@
 
 package com.simplelock.jdbc;
 
-import com.simplelock.common.BaseSimpleLockTest;
+import com.simplelock.common.BaseJdbcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
-@TestPropertySource(properties = {
+@SpringBootTest(properties = {
         "spring.datasource.url=jdbc:h2:mem:demo",
         "simplelock.jdbc.enabled=true",
         "simplelock.jdbc.cleanup-on-startup=true",
         "simplelock.jdbc.auto-generate-ddl=true"
 })
-@DirtiesContext
-public class JdbcSimpleLockCleanupServiceTest extends BaseSimpleLockTest {
+public class JdbcSimpleLockCleanupServiceTest extends BaseJdbcTest {
 
-    @Autowired
-    private JdbcSimpleLockCleanupService instance;
-
-    @DisplayName("When context loads, cleanup service should truncate the DB lock table")
+    @DisplayName("When context loads cleanup service should truncate the DB lock table")
     @Test
     void contextLoads_cleanupOnStartupEnabled() {
         verify(jdbcTemplate, times(1)).update(JdbcSimpleLockQuery.TRUNCATE.getQuery());

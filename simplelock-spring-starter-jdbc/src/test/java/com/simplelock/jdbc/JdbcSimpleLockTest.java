@@ -22,7 +22,7 @@
 package com.simplelock.jdbc;
 
 import com.simplelock.api.SimpleLock;
-import com.simplelock.common.BaseSimpleLockTest;
+import com.simplelock.common.BaseJdbcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,30 +30,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
-@TestPropertySource(properties = {
+@SpringBootTest(properties = {
         "spring.datasource.url=jdbc:h2:mem:demo",
         "simplelock.jdbc.enabled=true",
         "simplelock.jdbc.cleanup-on-startup=true",
         "simplelock.jdbc.auto-generate-ddl=true"
 })
-@Sql(statements = "TRUNCATE TABLE simple_lock", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@DirtiesContext
-public abstract class JdbcSimpleLockTest extends BaseSimpleLockTest {
+public class JdbcSimpleLockTest extends BaseJdbcTest {
 
     @Autowired
     private SimpleLock simpleLock;
@@ -98,32 +93,29 @@ public abstract class JdbcSimpleLockTest extends BaseSimpleLockTest {
             String token = simpleLock.acquire(UNIQUE_KEY).orElseThrow();
 
             // then
-            SimpleLockRow result = getSimpleLockRow();
+            SimpleLockRow result = jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
             assertNotNull(result);
             simpleLock.release(token, 0L, TimeUnit.MILLISECONDS);
             assertThrows(EmptyResultDataAccessException.class,
-                    JdbcSimpleLockTest.this::getSimpleLockRow);
+                    () -> jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper));
         }
 
         @DisplayName("Acquire and release the lock with delay, should delete lock record from DB after the delay")
         @Test
-        void releaseLockWithDelay_successful() throws InterruptedException {
+        void releaseLockWithDelay_successful() {
             // when
             String token = simpleLock.acquire(UNIQUE_KEY).orElseThrow();
 
             // then - release with 100 ms delay
-            SimpleLockRow result = getSimpleLockRow();
+            SimpleLockRow result = jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
             assertNotNull(result);
             assertEquals(token, result.getToken());
 
             simpleLock.release(token, 100L, TimeUnit.MILLISECONDS);
-            result = getSimpleLockRow();
+            result = jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
             assertNotNull(result);
             assertEquals(token, result.getToken());
-            Thread.sleep(500);
-            // select after some time, should not have records
-            assertThrows(EmptyResultDataAccessException.class,
-                    JdbcSimpleLockTest.this::getSimpleLockRow);
+            await().atLeast(100, TimeUnit.MILLISECONDS).until(lockReleased());
         }
     }
 
