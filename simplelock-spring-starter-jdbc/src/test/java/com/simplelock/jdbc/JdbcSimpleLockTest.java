@@ -95,6 +95,7 @@ public class JdbcSimpleLockTest extends BaseJdbcTest {
             // then
             SimpleLockRow result = jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
             assertNotNull(result);
+            assertEquals(token, result.getToken());
             simpleLock.release(token, 0L, TimeUnit.MILLISECONDS);
             assertThrows(EmptyResultDataAccessException.class,
                     () -> jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper));
@@ -106,16 +107,15 @@ public class JdbcSimpleLockTest extends BaseJdbcTest {
             // when
             String token = simpleLock.acquire(UNIQUE_KEY).orElseThrow();
 
-            // then - release with 100 ms delay
+            // then
             SimpleLockRow result = jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
             assertNotNull(result);
             assertEquals(token, result.getToken());
-
             simpleLock.release(token, 100L, TimeUnit.MILLISECONDS);
             result = jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
             assertNotNull(result);
             assertEquals(token, result.getToken());
-            await().atLeast(100, TimeUnit.MILLISECONDS).until(lockReleased());
+            await().atLeast(100L, TimeUnit.MILLISECONDS).until(lockReleased());
         }
     }
 
