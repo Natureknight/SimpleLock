@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SimpleLockJdbcAutoConfigurationTest {
 
     private final ApplicationContextRunner runner = new ApplicationContextRunner()
-            .withPropertyValues("spring.datasource.url=jdbc:h2:mem:demo;MODE=MySQL")
+            .withPropertyValues("spring.datasource.url=jdbc:h2:mem:demo")
             .withConfiguration(AutoConfigurations.of(DataSourceAutoConfiguration.class,
                     JdbcTemplateAutoConfiguration.class))
             .withUserConfiguration(SimpleLockJdbcAutoConfiguration.class);

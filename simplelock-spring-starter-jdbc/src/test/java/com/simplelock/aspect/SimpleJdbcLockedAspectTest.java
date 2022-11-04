@@ -39,7 +39,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(properties = {
-        "spring.datasource.url=jdbc:h2:mem:demo;MODE=MySQL",
+        "spring.datasource.url=jdbc:h2:mem:demo",
         "simplelock.jdbc.enabled=true",
         "simplelock.jdbc.auto-generate-ddl=true"
 })
