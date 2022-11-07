@@ -30,7 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(properties = {
-        "spring.datasource.url=jdbc:h2:mem:demo",
+        "spring.datasource.url=jdbc:h2:mem:test",
         "simplelock.jdbc.enabled=true",
         "simplelock.jdbc.cleanup-on-startup=true",
         "simplelock.jdbc.auto-generate-ddl=true"

@@ -24,11 +24,13 @@ package com.simplelock.aspect;
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
+import static com.simplelock.api.SimpleLockConstants.DEFAULT_DELAY;
+
 /**
  * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking.
  *
- * @see SimpleJdbcLockedAspect
  * @author Stanislav Dabov
+ * @see SimpleJdbcLockedAspect
  * @since 1.0.0
  */
 @Target(ElementType.METHOD)
@@ -39,7 +41,7 @@ public @interface SimpleJdbcLocked {
     /**
      * @return the period to hold the lock for.
      */
-    long releaseAfter() default 10L;
+    long releaseAfter() default DEFAULT_DELAY;
 
     /**
      * @return the chosen {@link TimeUnit}

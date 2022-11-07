@@ -24,6 +24,8 @@ package com.simplelock.api;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static com.simplelock.api.SimpleLockConstants.DEFAULT_DELAY;
+
 /**
  * Common interface to define API for locking.
  * Provide your own implementation in your configuration in order to override the default behaviour.
@@ -58,7 +60,7 @@ public interface SimpleLock {
      * @param token given token
      */
     default void release(String token) {
-        release(token, 10L, TimeUnit.SECONDS);
+        release(token, DEFAULT_DELAY, TimeUnit.SECONDS);
     }
 
     /**

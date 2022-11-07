@@ -71,7 +71,7 @@ public class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         // then
         verify(simpleLock, times(1)).acquireForCurrentMethod("lockedMethodWithCustomReleaseDelay");
         verify(simpleLock, never()).release(anyString(), anyInt(), any(TimeUnit.class));
-        await().atLeast(100L, TimeUnit.MILLISECONDS).until(lockReleased());
+        await().atLeast(100L, TimeUnit.MILLISECONDS).until(() -> lockReleased(jdbcTemplate));
     }
 
     static class DummyClassUsingAspect {
@@ -87,7 +87,6 @@ public class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
 
     @SpringBootApplication
     static class TestApplication {
-
         @Bean
         public DummyClassUsingAspect dummyClassUsingAspect() {
             return new DummyClassUsingAspect();

@@ -29,7 +29,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -42,12 +44,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest(properties = {
-        "spring.datasource.url=jdbc:h2:mem:demo",
-        "simplelock.jdbc.enabled=true",
-        "simplelock.jdbc.cleanup-on-startup=true",
-        "simplelock.jdbc.auto-generate-ddl=true"
-})
+@SpringBootTest(properties = "spring.datasource.url=jdbc:h2:mem:test")
 public class JdbcSimpleLockTest extends BaseJdbcTest {
 
     @Autowired
@@ -88,38 +85,36 @@ public class JdbcSimpleLockTest extends BaseJdbcTest {
 
         @DisplayName("Acquire and instantly release the lock, should delete lock record from DB")
         @Test
-        void instantReleaseLock_successful() {
+        void releaseLockWithExplicitInstantRelease_successful() {
             // when
-            String token = simpleLock.acquire(UNIQUE_KEY).orElseThrow();
+            simpleLock.acquire(UNIQUE_KEY).ifPresent(token ->
+                    simpleLock.release(token, 0L, TimeUnit.MILLISECONDS));
 
             // then
-            SimpleLockRow result = jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
-            assertNotNull(result);
-            assertEquals(token, result.getToken());
-            simpleLock.release(token, 0L, TimeUnit.MILLISECONDS);
             assertThrows(EmptyResultDataAccessException.class,
-                    () -> jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper));
+                    () -> jdbcTemplate.queryForObject(SELECT_QUERY, ROW_MAPPER));
         }
 
         @DisplayName("Acquire and release the lock with delay, should delete lock record from DB after the delay")
         @Test
         void releaseLockWithDelay_successful() {
             // when
-            String token = simpleLock.acquire(UNIQUE_KEY).orElseThrow();
+            simpleLock.acquire(UNIQUE_KEY).ifPresent(token ->
+                    simpleLock.release(token, 100L, TimeUnit.MILLISECONDS));
 
             // then
-            SimpleLockRow result = jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
-            assertNotNull(result);
-            assertEquals(token, result.getToken());
-            simpleLock.release(token, 100L, TimeUnit.MILLISECONDS);
-            result = jdbcTemplate.queryForObject(SELECT_QUERY, rowMapper);
-            assertNotNull(result);
-            assertEquals(token, result.getToken());
-            await().atLeast(100L, TimeUnit.MILLISECONDS).until(lockReleased());
+            assertNotNull(jdbcTemplate.queryForObject(SELECT_QUERY, ROW_MAPPER));
+            assertFalse(lockReleased(jdbcTemplate));
+            await().atLeast(100L, TimeUnit.MILLISECONDS).until(() -> lockReleased(jdbcTemplate));
         }
     }
 
     @SpringBootApplication
     static class TestApplication {
+
+        @Bean
+        public SimpleLock simpleLock(JdbcTemplate jdbcTemplate) {
+            return new JdbcSimpleLock(jdbcTemplate);
+        }
     }
 }

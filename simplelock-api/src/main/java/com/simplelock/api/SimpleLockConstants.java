@@ -19,8 +19,13 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-CREATE TABLE IF NOT EXISTS simple_lock (
-    id        VARCHAR(36)   PRIMARY KEY  NOT NULL,
-    lock_key  VARCHAR(255)  UNIQUE       NOT NULL,
-    token     VARCHAR(36)                NOT NULL
-);
+package com.simplelock.api;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class SimpleLockConstants {
+
+    public static final long DEFAULT_DELAY = 10L;
+}
