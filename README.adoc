@@ -1,3 +1,7 @@
+image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=alert_status[SonarCloud Status]
+image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=coverage[SonarCloud Coverage]
+image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=bugs[SonarCloud Bugs]
+image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=vulnerabilities[SonarCloud Vulnerabilities]
 image:https://img.shields.io/badge/Java-11%2B-ED8B00?style=for-the-badge&labelColor=ED8B00&logo=java&color=808080[Java]
 image:https://img.shields.io/jitpack/v/github/Natureknight/SimpleLock?style=for-the-badge&labelColor=007ec5&color=808080&logo=Git&logoColor=white[JitPack]
 image:https://img.shields.io/badge/Spring%20Boot-2.7.5-ED8B00?style=for-the-badge&labelColor=6db33f&color=808080&logo=Spring%20Boot&logoColor=white[Spring Boot]
