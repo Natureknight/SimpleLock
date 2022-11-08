@@ -54,7 +54,6 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
 
     @Nested
     class AcquireLockTests {
-
         @DisplayName("Acquire lock should return optional with token")
         @Test
         void acquireLockOnce_shouldReturnOptionalWithToken() {
