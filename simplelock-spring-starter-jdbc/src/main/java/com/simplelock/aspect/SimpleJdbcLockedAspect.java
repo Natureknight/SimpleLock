@@ -36,6 +36,7 @@ import java.util.Optional;
  * then release the lock only if the annotated method managed to successfully acquire the lock.
  *
  * @author Stanislav Dabov
+ * @see SimpleJdbcLocked
  * @since 1.0.0
  */
 @Aspect
@@ -45,7 +46,7 @@ public class SimpleJdbcLockedAspect {
 
     private final SimpleLock simpleLock;
 
-    @Around("@annotation(SimpleJdbcLocked)")
+    @Around("@annotation(com.simplelock.aspect.SimpleJdbcLocked)")
     public Object intercept(ProceedingJoinPoint joinPoint) throws Throwable {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
