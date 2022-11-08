@@ -47,7 +47,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(properties = "spring.datasource.url=jdbc:h2:mem:test")
-public class JdbcSimpleLockTest extends BaseJdbcTest {
+class JdbcSimpleLockTest extends BaseJdbcTest {
 
     @Autowired
     private SimpleLock simpleLock;

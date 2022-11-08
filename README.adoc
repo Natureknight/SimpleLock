@@ -160,7 +160,7 @@ Add the project dependency into your `pom.xml`:
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
-    <version>1.5.8</version>
+    <version>1.5.9</version>
   </dependency>
 </dependencies>
 ----
@@ -182,7 +182,7 @@ Add the project dependency into your `build.gradle`:
 [source,groovy]
 
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.5.8')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.5.9')
 ----
 
 === Compatibility:
@@ -200,6 +200,10 @@ implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.5
 If you want to use custom lock implementations, simply implement `com.simplelock.api.SimpleLock` interface and register it in a configuration.
 
 == Changelog:
+
+=== 1.5.9
+
+- Fixed reported Sonar issues
 
 === 1.5.8
 

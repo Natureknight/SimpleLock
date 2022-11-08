@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
         "simplelock.jdbc.cleanup-on-startup=true",
         "simplelock.jdbc.auto-generate-ddl=true"
 })
-public class JdbcSimpleLockCleanupServiceTest extends BaseJdbcTest {
+class JdbcSimpleLockCleanupServiceTest extends BaseJdbcTest {
 
     @DisplayName("When context loads cleanup service should truncate the DB lock table")
     @Test

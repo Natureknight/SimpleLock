@@ -43,7 +43,7 @@ import static org.mockito.Mockito.*;
         "simplelock.jdbc.enabled=true",
         "simplelock.jdbc.auto-generate-ddl=true"
 })
-public class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
+class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
 
     @Autowired
     private DummyClassUsingAspect dummyClassUsingAspect;

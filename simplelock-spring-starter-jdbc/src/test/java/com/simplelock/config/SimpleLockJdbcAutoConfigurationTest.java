@@ -34,7 +34,7 @@ import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SimpleLockJdbcAutoConfigurationTest {
+class SimpleLockJdbcAutoConfigurationTest {
 
     private final ApplicationContextRunner runner = new ApplicationContextRunner()
             .withPropertyValues("spring.datasource.url=jdbc:h2:mem:demo")
