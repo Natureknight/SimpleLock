@@ -41,10 +41,12 @@
 
     <groupId>com.github.natureknight</groupId>
     <artifactId>simplelock-parent</artifactId>
-    <version>1.5.7</version>
+    <version>1.5.8</version>
 
     <properties>
         <java.version>11</java.version>
+        <sonar.organization>simplelock</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <developers>

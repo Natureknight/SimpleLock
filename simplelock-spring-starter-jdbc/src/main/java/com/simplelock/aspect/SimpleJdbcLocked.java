@@ -44,7 +44,7 @@ public @interface SimpleJdbcLocked {
     long releaseAfter() default 10L;
 
     /**
-     * Default to {@link TimeUnit#SECONDS seconds}
+     * Default to {@link TimeUnit#SECONDS}
      *
      * @return the chosen {@link TimeUnit}
      */
