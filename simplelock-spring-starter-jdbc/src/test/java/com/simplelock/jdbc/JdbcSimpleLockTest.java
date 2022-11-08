@@ -26,6 +26,8 @@ import com.simplelock.common.BaseJdbcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -96,16 +98,17 @@ public class JdbcSimpleLockTest extends BaseJdbcTest {
         }
 
         @DisplayName("Acquire and release the lock with delay, should delete lock record from DB after the delay")
-        @Test
-        void releaseLockWithDelay_successful() {
+        @ParameterizedTest
+        @ValueSource(longs = {100L, 1000L})
+        void releaseLockWithDelay_successful(long delay) {
             // when
             simpleLock.acquire(UNIQUE_KEY).ifPresent(token ->
-                    simpleLock.release(token, 100L, TimeUnit.MILLISECONDS));
+                    simpleLock.release(token, delay, TimeUnit.MILLISECONDS));
 
             // then
             assertNotNull(jdbcTemplate.queryForObject(SELECT_QUERY, ROW_MAPPER));
             assertFalse(lockReleased(jdbcTemplate));
-            await().atLeast(100L, TimeUnit.MILLISECONDS).until(() -> lockReleased(jdbcTemplate));
+            await().atLeast(delay, TimeUnit.MILLISECONDS).until(() -> lockReleased(jdbcTemplate));
         }
     }
 
