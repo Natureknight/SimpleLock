@@ -90,6 +90,16 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         verify(simpleLock, times(1)).release(anyString(), anyLong(), any(TimeUnit.class));
     }
 
+    @DisplayName("Locked method with instant release of the acquired lock")
+    @Test
+    void lockedMethodWithInstantRelease_success() {
+        // when
+        dummyClassUsingAspect.lockedMethodWithInstantRelease();
+
+        verify(simpleLock, times(1)).acquireWithKeyPrefix("lockedMethodWithInstantRelease", "");
+        verify(simpleLock, times(1)).releaseImmediately(anyString());
+    }
+
     static class DummyClassUsingAspect {
 
         @SimpleJdbcLocked
@@ -98,6 +108,10 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
 
         @SimpleJdbcLocked(releaseAfter = 100L, timeUnit = TimeUnit.MILLISECONDS)
         public void lockedMethodWithCustomReleaseDelay() {
+        }
+
+        @SimpleJdbcLocked(releaseImmediately = true)
+        public void lockedMethodWithInstantRelease() {
         }
     }
 
