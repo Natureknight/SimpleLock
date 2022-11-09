@@ -20,7 +20,9 @@ These options are customizable.
 
 === Manually controlled locks:
 
-Use the `releaseAfter` attribute to control the duration of holding the lock (default is 10 seconds)
+Use the `releaseAfter` attribute to control the duration of holding the lock (default is 10 seconds) +
+Use the `releaseImmediately` to release the lock right after execution.
+Note this flag will override the `releaseAfter` if set altogether
 
 ==== Example
 
@@ -42,7 +44,7 @@ public class MyJdbcLockedService {
     /**
      * Invoke with distributed JDBC lock, by releasing the lock immediately
      */
-    @SimpleJdbcLocked
+    @SimpleJdbcLocked(releaseImmediately = true)
     public void doSomethingElse() {
         // locked method body
     }

@@ -55,17 +55,25 @@ public class SimpleJdbcLockedAspect {
         log.debug("Intercepted method [{}] annotated with [{}]", signature.getMethod().getName(),
                 SimpleJdbcLocked.class.getSimpleName());
 
-        // acquire lock just by the method name
+        // Try to acquire lock by using just the method name as unique key
         Optional<String> tokenOptional = simpleLock.acquireWithKeyPrefix(
                 signature.getMethod().getName(), "");
 
-        Object result = null;
         if (tokenOptional.isPresent()) {
-            // proceed with execution if lock successfully acquired
-            result = joinPoint.proceed();
+            // Proceed with execution if lock successfully acquired
+            Object result = joinPoint.proceed();
+
+            // Instantly release the lock after execution
+            if (annotation.releaseImmediately() || annotation.releaseAfter() == 0L) {
+                simpleLock.releaseImmediately(tokenOptional.get());
+                return result;
+            }
+
+            // Or release the lock with the specified delay
             simpleLock.release(tokenOptional.get(), annotation.releaseAfter(), annotation.timeUnit());
+            return result;
         }
 
-        return result;
+        return null;
     }
 }

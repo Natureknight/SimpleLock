@@ -37,7 +37,16 @@ import java.util.concurrent.TimeUnit;
 public @interface SimpleJdbcLocked {
 
     /**
-     * Default to {@link Long long}
+     * Whether to release lock immediately. This flag will effectively
+     * ignore if the flags below are also set.
+     *
+     * @return whether to release the lock immediately after execution
+     */
+    boolean releaseImmediately() default false;
+
+    /**
+     * Default to {@link Long long}. If set to 0, the lock will be
+     * released immediately.
      *
      * @return the period to hold the lock for.
      */

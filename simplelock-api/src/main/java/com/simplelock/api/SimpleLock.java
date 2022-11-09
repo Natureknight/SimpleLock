@@ -67,9 +67,7 @@ public interface SimpleLock {
      *
      * @param token given token
      */
-    default void releaseImmediately(String token) {
-        release(token, 0L, TimeUnit.MILLISECONDS);
-    }
+    void releaseImmediately(String token);
 
     /**
      * Release the lock by given lock token. Lock will be released synchronously in case

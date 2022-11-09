@@ -35,7 +35,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Optional;
@@ -100,7 +99,18 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
     @Nested
     class ReleaseLockTests {
 
-        @DisplayName("Acquire and instantly release the lock, should delete lock record from DB")
+        @DisplayName("Acquire and instantly release the lock, should delete lock record from DB #1")
+        @Test
+        void releaseLockWithNoExplicitInstantRelease_successful() {
+            // when
+            simpleLock.acquire(UNIQUE_KEY).ifPresent(token ->
+                    simpleLock.releaseImmediately(token));
+
+            // then
+            assertTrue(lockReleased(jdbcTemplate));
+        }
+
+        @DisplayName("Acquire and instantly release the lock, should delete lock record from DB #2")
         @Test
         void releaseLockWithExplicitInstantRelease_successful() {
             // when
@@ -108,8 +118,7 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
                     simpleLock.release(token, 0L, TimeUnit.MILLISECONDS));
 
             // then
-            assertThrows(EmptyResultDataAccessException.class,
-                    () -> jdbcTemplate.queryForObject(SELECT_QUERY, ROW_MAPPER));
+            assertTrue(lockReleased(jdbcTemplate));
         }
 
         @DisplayName("Acquire and release the lock with delay, should delete lock record from DB after the delay")

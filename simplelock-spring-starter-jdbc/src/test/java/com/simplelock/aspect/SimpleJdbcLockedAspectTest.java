@@ -73,8 +73,21 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         // then
         verify(simpleLock, times(1)).acquireWithKeyPrefix(
                 "lockedMethodWithCustomReleaseDelay", EMPTY_STRING);
-        verify(simpleLock, never()).release(anyString(), anyInt(), any(TimeUnit.class));
+        verify(simpleLock, times(1)).release(anyString(), eq(100L), eq(TimeUnit.MILLISECONDS));
         await().atLeast(100L, TimeUnit.MILLISECONDS).until(() -> lockReleased(jdbcTemplate));
+    }
+
+    @DisplayName("When trying to invoke annotated method twice, only first invocation should acquire lock")
+    @Test
+    void lockCouldNotBeAcquired_skipExecution() {
+        // when
+        dummyClassUsingAspect.lockedMethod();
+        dummyClassUsingAspect.lockedMethod();
+
+        // then
+        verify(simpleLock, times(2)).acquireWithKeyPrefix("lockedMethod", "");
+        verify(simpleLock, times(2)).acquire("lockedMethod-");
+        verify(simpleLock, times(1)).release(anyString(), anyLong(), any(TimeUnit.class));
     }
 
     static class DummyClassUsingAspect {

@@ -77,10 +77,16 @@ public class JdbcSimpleLock implements SimpleLock {
     }
 
     @Override
+    public void releaseImmediately(String token) {
+        log.debug("Lock for token [{}] will be released immediately", token);
+        jdbcTemplate.update(RELEASE.getQuery(), token);
+    }
+
+    @Override
     public void release(String token, long releaseAfter, TimeUnit timeUnit) {
         if (releaseAfter == 0L) {
-            log.debug("Lock for token [{}] will be released immediately", token);
-            jdbcTemplate.update(RELEASE.getQuery(), token);
+            log.info("Releasing a lock for token [{}] with delay of 0, using releaseImmediately instead", token);
+            releaseImmediately(token);
             return;
         }
 
