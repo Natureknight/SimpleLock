@@ -55,8 +55,9 @@ public class SimpleJdbcLockedAspect {
         log.debug("Intercepted method [{}] annotated with [{}]", signature.getMethod().getName(),
                 SimpleJdbcLocked.class.getSimpleName());
 
-        Optional<String> tokenOptional = simpleLock.acquireForCurrentMethod(
-                signature.getMethod().getName());
+        // acquire lock just by the method name
+        Optional<String> tokenOptional = simpleLock.acquireWithKeyPrefix(
+                signature.getMethod().getName(), "");
 
         Object result = null;
         if (tokenOptional.isPresent()) {

@@ -1,7 +1,7 @@
-image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=alert_status[SonarCloud Status]
-image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=coverage[SonarCloud Coverage]
-image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=bugs[SonarCloud Bugs]
-image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=vulnerabilities[SonarCloud Vulnerabilities] +
+image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=alert_status[link="https://sonarcloud.io/summary/overall?id=Natureknight_SimpleLock"]
+image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=coverage[link="https://sonarcloud.io/summary/overall?id=Natureknight_SimpleLock"]
+image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=bugs[link="https://sonarcloud.io/summary/overall?id=Natureknight_SimpleLock"]
+image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=vulnerabilities[link="https://sonarcloud.io/summary/overall?id=Natureknight_SimpleLock"] +
 image:https://img.shields.io/badge/Java-11%2B-ED8B00?style=for-the-badge&labelColor=ED8B00&logo=java&color=808080[Java]
 image:https://img.shields.io/jitpack/v/github/Natureknight/SimpleLock?style=for-the-badge&labelColor=007ec5&color=808080&logo=Git&logoColor=white[JitPack]
 image:https://img.shields.io/badge/Spring%20Boot-2.7.5-ED8B00?style=for-the-badge&labelColor=6db33f&color=808080&logo=Spring%20Boot&logoColor=white[Spring Boot]
@@ -49,7 +49,7 @@ public class MyJdbcLockedService {
 }
 ----
 
-or programmatically, where you're allowed to propagate the lock token further into your service and release the lock whenever suitable for your use case:
+or programmatically, where you're allowed to propagate the lock token further into your service and release the lock whenever suitable for your use case, e.g. by sending the token in an event payload and release the lock after the event has been received back from the message broker:
 
 [source,java]
 ----
@@ -80,12 +80,12 @@ public class MyJdbcLockedService {
 
     /**
      * Invoke with distributed JDBC lock, by releasing the lock immediately.
-     * By using acquireForCurrentMethod, you will be able to lock another action(s)
+     * By using acquireWithKeyPrefix, you will be able to lock another action(s)
      * for the same business ID, as the actual lock key in this case
      * will be "doSomething-KEY" where KEY will be the actual business ID
      */
     public void doSomething(UUID id) {
-        simpleLock.acquireForCurrentMethod(id.toString())
+        simpleLock.acquireWithKeyPrefix("doSomething", id.toString())
                 // IMPORTANT: lock has been acquired successfully only if the token is present,
                 // so make sure you have this check wrapping your service logic that needs to be locked
                 .ifPresent(token -> {
@@ -93,7 +93,7 @@ public class MyJdbcLockedService {
 
                     // IMPORTANT: Don't forget to release your lock after execution, unless
                     // your requirement is to have it locked forever for some reason
-                    simpleLock.release(token);
+                    simpleLock.releaseImmediately(token);
                 });
     }
 }
@@ -129,9 +129,9 @@ List of supported databases:
 |===
 | Property | Description | Default
 
-| `simplelock.jdbc.enabled` | Whether the JDBC lock is enabled (Default: `true`) | `true`
-| `simplelock.jdbc.auto-generate-ddl` | Whether to automatically create the DB object(s) | `true`
-| `simplelock.jdbc.cleanup-on-startup` | Whether to clean up DB if any existing locks are not released | false
+| `simplelock.jdbc.enabled`            | Whether the JDBC lock is enabled                              | `true`
+| `simplelock.jdbc.auto-generate-ddl`  | Whether to automatically create the DB object(s)              | `true`
+| `simplelock.jdbc.cleanup-on-startup` | Whether to clean up DB if any existing locks are not released | `false`
 |===
 
 |===
@@ -164,7 +164,7 @@ Add the project dependency into your `pom.xml`:
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
-    <version>1.5.9</version>
+    <version>1.6.0</version>
   </dependency>
 </dependencies>
 ----
@@ -186,7 +186,7 @@ Add the project dependency into your `build.gradle`:
 [source,groovy]
 
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.5.9')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.6.0')
 ----
 
 === Compatibility:
@@ -204,6 +204,11 @@ implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.5
 If you want to use custom lock implementations, simply implement `com.simplelock.api.SimpleLock` interface and register it in a configuration.
 
 == Changelog:
+
+=== 1.6.0
+
+- Replaced `acquireLockForMethod` by `acquireLockWithKeyPrefix`
+- Updated README
 
 === 1.5.9
 

@@ -57,8 +57,10 @@ public class SimpleLockJdbcAutoConfiguration {
 
     @ConditionalOnMissingBean
     @Bean
-    public SimpleLock simpleLock(final JdbcTemplate jdbcTemplate) {
-        return new JdbcSimpleLock(jdbcTemplate);
+    public SimpleLock simpleLock(
+            JdbcTemplate jdbcTemplate,
+            SimpleLockJdbcConfigurationProperties properties) {
+        return new JdbcSimpleLock(jdbcTemplate, properties);
     }
 
     @AutoConfiguration

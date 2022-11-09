@@ -23,6 +23,8 @@ package com.simplelock.jdbc;
 
 import com.simplelock.api.SimpleLock;
 import com.simplelock.common.BaseJdbcTest;
+import com.simplelock.config.SimpleLockJdbcConfigurationProperties;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -65,6 +68,18 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
             assertThat(tokenOptional).isPresent();
             verify(jdbcTemplate, times(1)).update(eq(JdbcSimpleLockQuery.ACQUIRE.getQuery()),
                     anyString(), eq(UNIQUE_KEY), eq(tokenOptional.get()));
+        }
+
+        @Test
+        void acquireForCurrentMethod_shouldAppendMethodNamePrefixToKey() {
+            // when
+            Optional<String> tokenOptional = simpleLock.acquireWithKeyPrefix(
+                    "methodName", UNIQUE_KEY);
+
+            // then
+            assertThat(tokenOptional).isPresent();
+            verify(jdbcTemplate, times(1)).update(eq(JdbcSimpleLockQuery.ACQUIRE.getQuery()),
+                    anyString(), eq("methodName-" + UNIQUE_KEY), eq(tokenOptional.get()));
         }
 
         @DisplayName("Acquire lock twice for the same key won't return token for the second attempt")
@@ -113,11 +128,15 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
     }
 
     @SpringBootApplication
+    @EnableConfigurationProperties(SimpleLockJdbcConfigurationProperties.class)
+    @RequiredArgsConstructor
     static class TestApplication {
+
+        private final SimpleLockJdbcConfigurationProperties properties;
 
         @Bean
         public SimpleLock simpleLock(JdbcTemplate jdbcTemplate) {
-            return new JdbcSimpleLock(jdbcTemplate);
+            return new JdbcSimpleLock(jdbcTemplate, properties);
         }
     }
 }

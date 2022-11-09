@@ -30,8 +30,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * This service will clean up the existing entries from DB as per your configuration if
  * <pre>simplelock.jdbc.cleanup-on-startup</pre> set to {@literal true}
  *
- * @since 1.2.0
  * @author Stanislav Dabov
+ * @since 1.2.0
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -41,6 +41,10 @@ public class JdbcSimpleLockCleanupService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+        truncateLockTable();
+    }
+
+    private void truncateLockTable() {
         jdbcTemplate.update(JdbcSimpleLockQuery.TRUNCATE.getQuery());
         log.debug("Database table [simple_lock] truncated");
     }

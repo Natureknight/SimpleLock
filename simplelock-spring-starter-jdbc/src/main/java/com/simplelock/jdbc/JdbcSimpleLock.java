@@ -22,10 +22,12 @@
 package com.simplelock.jdbc;
 
 import com.simplelock.api.SimpleLock;
+import com.simplelock.config.SimpleLockJdbcConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -47,6 +49,7 @@ import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 public class JdbcSimpleLock implements SimpleLock {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleLockJdbcConfigurationProperties properties;
 
     @Override
     public Optional<String> acquire(String key) {
@@ -66,8 +69,11 @@ public class JdbcSimpleLock implements SimpleLock {
     }
 
     @Override
-    public Optional<String> acquireForCurrentMethod(String key) {
-        return acquire(constructLockKey(key));
+    public Optional<String> acquireWithKeyPrefix(
+            @NonNull String keyPrefix,
+            @NonNull String key) {
+
+        return acquire(keyPrefix + "-" + key);
     }
 
     @Override
@@ -78,7 +84,7 @@ public class JdbcSimpleLock implements SimpleLock {
             return;
         }
 
-        if (log.isWarnEnabled()) {
+        if (!properties.isCleanupOnStartup()) {
             long minutes = TimeUnit.MINUTES.convert(releaseAfter, timeUnit);
             // Print a log message here in case client wants to hold the lock for too long. This might end up
             // having the lock stuck in DB and never released (or released just after service restart only if
@@ -86,8 +92,9 @@ public class JdbcSimpleLock implements SimpleLock {
             // service node which acquired the lock initially
             if (minutes >= 1L) {
                 log.warn("Holding a lock for too long might end up having your lock record stuck in database "
-                        + "and never released after e.g. service restart or crash. Currently you're about to "
-                        + "hold the lock for {} minute(s) or more.", minutes);
+                        + "and never released after e.g. service restart or crash, unless you configure your "
+                        + "service to release all locks on startup. Currently you're about to hold the lock "
+                        + "for {} minute(s) or more.", minutes);
             }
         }
 
@@ -97,15 +104,5 @@ public class JdbcSimpleLock implements SimpleLock {
 
         newSingleThreadScheduledExecutor().schedule(() -> jdbcTemplate.update(RELEASE.getQuery(), token),
                 releaseAfter, timeUnit);
-    }
-
-    private static String constructLockKey(String key) {
-        var stackTrace = Thread.currentThread().getStackTrace();
-        // just to be safe
-        if (stackTrace.length >= 4) {
-            return stackTrace[3].getMethodName() + "-" + key;
-        }
-
-        return key;
     }
 }

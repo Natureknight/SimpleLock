@@ -43,22 +43,32 @@ public interface SimpleLock {
     Optional<String> acquire(String key);
 
     /**
-     * Similar to {@link SimpleLock#acquire(String)}, but will also include the current method name
+     * Similar to {@link SimpleLock#acquire(String)}, but will also include the key prefix
      * in the key so same unique key could be used, but it will behave like a different lock
-     * if invoked from different methods.
+     * if e.g. invoked from different methods.
      *
-     * @param key given unique key suffix of the lock
+     * @param keyPrefix given key prefix e.g. invocation method name
+     * @param key       given unique key suffix of the lock
      * @return the lock token
      */
-    Optional<String> acquireForCurrentMethod(String key);
+    Optional<String> acquireWithKeyPrefix(String keyPrefix, String key);
 
     /**
-     * Release the lock immediately by given token
+     * Release the lock with the default delay by given token
      *
      * @param token given token
      */
     default void release(String token) {
         release(token, 10L, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Release the lock immediately
+     *
+     * @param token given token
+     */
+    default void releaseImmediately(String token) {
+        release(token, 0L, TimeUnit.MILLISECONDS);
     }
 
     /**

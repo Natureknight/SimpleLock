@@ -45,6 +45,8 @@ import static org.mockito.Mockito.*;
 })
 class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
 
+    private static final String EMPTY_STRING = "";
+
     @Autowired
     private DummyClassUsingAspect dummyClassUsingAspect;
 
@@ -58,7 +60,7 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         dummyClassUsingAspect.lockedMethod();
 
         // then
-        verify(simpleLock, times(1)).acquireForCurrentMethod("lockedMethod");
+        verify(simpleLock, times(1)).acquireWithKeyPrefix("lockedMethod", EMPTY_STRING);
         verify(simpleLock, times(1)).release(anyString(), eq(10L), eq(TimeUnit.SECONDS));
     }
 
@@ -69,7 +71,8 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         dummyClassUsingAspect.lockedMethodWithCustomReleaseDelay();
 
         // then
-        verify(simpleLock, times(1)).acquireForCurrentMethod("lockedMethodWithCustomReleaseDelay");
+        verify(simpleLock, times(1)).acquireWithKeyPrefix(
+                "lockedMethodWithCustomReleaseDelay", EMPTY_STRING);
         verify(simpleLock, never()).release(anyString(), anyInt(), any(TimeUnit.class));
         await().atLeast(100L, TimeUnit.MILLISECONDS).until(() -> lockReleased(jdbcTemplate));
     }
