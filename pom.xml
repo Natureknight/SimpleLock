@@ -28,7 +28,7 @@
         <module>simplelock-api</module>
         <module>simplelock-spring-starter</module>
         <module>simplelock-spring-starter-jdbc</module>
-        <module>simplelock-example</module>
+        <module>simplelock-spring-example</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
