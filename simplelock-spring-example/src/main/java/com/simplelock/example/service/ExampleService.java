@@ -21,6 +21,12 @@
 
 package com.simplelock.example.service;
 
+/**
+ * Example locked service interface
+ *
+ * @author Stanislav Dabov
+ * @since 1.6.1
+ */
 public interface ExampleService {
 
     void lockedMethodWithDefaultRelease();

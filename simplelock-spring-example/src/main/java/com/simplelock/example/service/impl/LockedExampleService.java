@@ -31,6 +31,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Example locked service implementation
+ *
+ * @author Stanislav Dabov
+ * @since 1.6.1
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -38,6 +44,9 @@ public class LockedExampleService implements ExampleService {
 
     private final SimpleLock simpleLock;
 
+    /**
+     * Default release delay (10 seconds).
+     */
     @Scheduled(fixedRate = 1000L)
     @SimpleJdbcLocked
     @Override
@@ -45,6 +54,9 @@ public class LockedExampleService implements ExampleService {
         log.info("Invoke [lockedMethodWithDefaultRelease] with distributed lock");
     }
 
+    /**
+     * Custom release delay after 5000 milliseconds (5 seconds).
+     */
     @Scheduled(fixedRate = 1000L)
     @SimpleJdbcLocked(releaseAfter = 5000L, timeUnit = TimeUnit.MILLISECONDS)
     @Override
@@ -52,12 +64,18 @@ public class LockedExampleService implements ExampleService {
         log.info("Invoke [lockedMethodWithCustomReleaseDelay] with distributed lock");
     }
 
+    /**
+     * Note that the lock could be released instantly after execution also
+     * by using the {@link SimpleJdbcLocked}'s attribute {@link SimpleJdbcLocked#releaseAfter()} to 0.
+     */
     @Scheduled(fixedRate = 1000L)
     @Override
     public void lockedMethodWithInstantRelease() {
         simpleLock.acquireWithKeyPrefix("lockedMethodWithInstantRelease", "unique-key")
                 .ifPresent(token -> {
                     log.info("Invoke [lockedMethodWithInstantRelease] with distributed lock");
+                    // Control over the delay programmatically, e.g:
+                    // simpleLock.release(token, 5L, TimeUnit.HOURS);
                     simpleLock.releaseImmediately(token);
                 });
     }
