@@ -45,7 +45,7 @@ import static org.mockito.Mockito.*;
 })
 class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
 
-    private static final String EMPTY_STRING = "";
+    private static final String UNIQUE_KEY = "aop-unique-key";
 
     @Autowired
     private DummyClassUsingAspect dummyClassUsingAspect;
@@ -60,7 +60,7 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         dummyClassUsingAspect.lockedMethod();
 
         // then
-        verify(simpleLock, times(1)).acquireWithKeyPrefix("lockedMethod", EMPTY_STRING);
+        verify(simpleLock, times(1)).acquireWithKeyPrefix("lockedMethod", UNIQUE_KEY);
         verify(simpleLock, times(1)).release(anyString(), eq(10L), eq(TimeUnit.SECONDS));
     }
 
@@ -72,7 +72,7 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
 
         // then
         verify(simpleLock, times(1)).acquireWithKeyPrefix(
-                "lockedMethodWithCustomReleaseDelay", EMPTY_STRING);
+                "lockedMethodWithCustomReleaseDelay", UNIQUE_KEY);
         verify(simpleLock, times(1)).release(anyString(), eq(100L), eq(TimeUnit.MILLISECONDS));
         await().atLeast(100L, TimeUnit.MILLISECONDS).until(() -> lockReleased(jdbcTemplate));
     }
@@ -85,8 +85,8 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         dummyClassUsingAspect.lockedMethod();
 
         // then
-        verify(simpleLock, times(2)).acquireWithKeyPrefix("lockedMethod", "");
-        verify(simpleLock, times(2)).acquire("lockedMethod-");
+        verify(simpleLock, times(2)).acquireWithKeyPrefix("lockedMethod", UNIQUE_KEY);
+        verify(simpleLock, times(2)).acquire("lockedMethod-" + UNIQUE_KEY);
         verify(simpleLock, times(1)).release(anyString(), anyLong(), any(TimeUnit.class));
     }
 
@@ -96,7 +96,7 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         // when
         dummyClassUsingAspect.lockedMethodWithInstantRelease();
 
-        verify(simpleLock, times(1)).acquireWithKeyPrefix("lockedMethodWithInstantRelease", "");
+        verify(simpleLock, times(1)).acquireWithKeyPrefix("lockedMethodWithInstantRelease", UNIQUE_KEY);
         verify(simpleLock, times(1)).releaseImmediately(anyString());
     }
 

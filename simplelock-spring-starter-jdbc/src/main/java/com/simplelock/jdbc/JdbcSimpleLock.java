@@ -36,7 +36,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.simplelock.jdbc.JdbcSimpleLockQuery.ACQUIRE;
 import static com.simplelock.jdbc.JdbcSimpleLockQuery.RELEASE;
-import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+import static java.util.concurrent.CompletableFuture.delayedExecutor;
+import static java.util.concurrent.CompletableFuture.runAsync;
 
 /**
  * Default implementation of {@link SimpleLock}
@@ -108,7 +109,7 @@ public class JdbcSimpleLock implements SimpleLock {
                 releaseAfter,
                 timeUnit.toString().toLowerCase(Locale.ROOT));
 
-        newSingleThreadScheduledExecutor().schedule(() -> jdbcTemplate.update(RELEASE.getQuery(), token),
-                releaseAfter, timeUnit);
+        runAsync(() -> jdbcTemplate.update(RELEASE.getQuery(), token),
+                delayedExecutor(releaseAfter, timeUnit));
     }
 }

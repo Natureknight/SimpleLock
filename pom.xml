@@ -28,6 +28,7 @@
         <module>simplelock-api</module>
         <module>simplelock-spring-starter</module>
         <module>simplelock-spring-starter-jdbc</module>
+        <module>simplelock-example</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -41,10 +42,11 @@
 
     <groupId>com.github.natureknight</groupId>
     <artifactId>simplelock-parent</artifactId>
-    <version>1.6.0</version>
+    <version>1.6.1</version>
 
     <properties>
         <java.version>11</java.version>
+        <spring.version>2.7.5</spring.version>
         <sonar.organization>simplelock</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <jacoco.version>0.8.8</jacoco.version>
@@ -52,7 +54,7 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
-        <sonar.exclusions>**/com/simplelock/api/**/*, **/*ConfigurationProperties.java</sonar.exclusions>
+        <sonar.exclusions>**/com/simplelock/api/**/*, **/*ConfigurationProperties.java, **/example/**</sonar.exclusions>
     </properties>
 
     <developers>

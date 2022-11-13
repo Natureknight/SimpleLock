@@ -44,6 +44,8 @@ import java.util.Optional;
 @Slf4j
 public class SimpleJdbcLockedAspect {
 
+    private static final String UNIQUE_KEY = "aop-unique-key";
+
     private final SimpleLock simpleLock;
 
     @Around("@annotation(com.simplelock.aspect.SimpleJdbcLocked)")
@@ -57,7 +59,7 @@ public class SimpleJdbcLockedAspect {
 
         // Try to acquire lock by using just the method name as unique key
         Optional<String> tokenOptional = simpleLock.acquireWithKeyPrefix(
-                signature.getMethod().getName(), "");
+                signature.getMethod().getName(), UNIQUE_KEY);
 
         if (tokenOptional.isPresent()) {
             // Proceed with execution if lock successfully acquired
