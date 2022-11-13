@@ -56,13 +56,8 @@ public class LockedExampleService implements ExampleService {
     @Override
     public void lockedMethodWithInstantRelease() {
         simpleLock.acquireWithKeyPrefix("lockedMethodWithInstantRelease", "unique-key")
-                // IMPORTANT: lock has been acquired successfully only if the token is present,
-                // so make sure you have this check wrapping your service logic that needs to be locked
                 .ifPresent(token -> {
                     log.info("Invoke [lockedMethodWithInstantRelease] with distributed lock");
-
-                    // IMPORTANT: Don't forget to release your lock after execution, unless
-                    // your requirement is to have it locked forever for some reason
                     simpleLock.releaseImmediately(token);
                 });
     }
