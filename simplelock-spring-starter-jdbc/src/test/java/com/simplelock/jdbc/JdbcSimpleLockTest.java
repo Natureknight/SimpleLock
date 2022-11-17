@@ -102,9 +102,12 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
         @DisplayName("Acquire and instantly release the lock, should delete lock record from DB #1")
         @Test
         void releaseLockWithNoExplicitInstantRelease_successful() {
+            // given
+            var tokenOptional = simpleLock.acquire(UNIQUE_KEY);
+            assertTrue(tokenOptional.isPresent());
+
             // when
-            simpleLock.acquire(UNIQUE_KEY).ifPresent(token ->
-                    simpleLock.releaseImmediately(token));
+            simpleLock.releaseImmediately(tokenOptional.get());
 
             // then
             assertTrue(lockReleased(jdbcTemplate));
@@ -113,9 +116,12 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
         @DisplayName("Acquire and instantly release the lock, should delete lock record from DB #2")
         @Test
         void releaseLockWithExplicitInstantRelease_successful() {
+            // given
+            var tokenOptional = simpleLock.acquire(UNIQUE_KEY);
+            assertTrue(tokenOptional.isPresent());
+
             // when
-            simpleLock.acquire(UNIQUE_KEY).ifPresent(token ->
-                    simpleLock.release(token, 0L, TimeUnit.MILLISECONDS));
+            simpleLock.release(tokenOptional.get(), 0L, TimeUnit.SECONDS);
 
             // then
             assertTrue(lockReleased(jdbcTemplate));
@@ -125,9 +131,12 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
         @ParameterizedTest
         @ValueSource(longs = {100L, 1000L})
         void releaseLockWithDelay_successful(long delay) {
+            // given
+            var tokenOptional = simpleLock.acquire(UNIQUE_KEY);
+            assertTrue(tokenOptional.isPresent());
+
             // when
-            simpleLock.acquire(UNIQUE_KEY).ifPresent(token ->
-                    simpleLock.release(token, delay, TimeUnit.MILLISECONDS));
+            simpleLock.release(tokenOptional.get(), delay, TimeUnit.MILLISECONDS);
 
             // then
             assertNotNull(jdbcTemplate.queryForObject(SELECT_QUERY, ROW_MAPPER));
