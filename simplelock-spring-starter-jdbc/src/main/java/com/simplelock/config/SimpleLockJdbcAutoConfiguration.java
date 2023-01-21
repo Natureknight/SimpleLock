@@ -39,7 +39,7 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import javax.sql.DataSource;
 
 /**
- * Autoconfiguration for {@link SimpleLock} default implementation {@link JdbcSimpleLock}
+ * Autoconfiguration for {@link SimpleLock} default implementation {@link JdbcSimpleLock}.
  *
  * @author Stanislav Dabov
  * @since 1.0.0

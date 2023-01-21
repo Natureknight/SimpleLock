@@ -168,7 +168,7 @@ Add the project dependency into your `pom.xml`:
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter</artifactId>
-    <version>1.6.1</version>
+    <version>$version</version>
   </dependency>
 </dependencies>
 ----
@@ -190,7 +190,7 @@ Add the project dependency into your `build.gradle`:
 [source,groovy]
 
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter:1.6.1')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter:$version')
 ----
 
 === Compatibility:

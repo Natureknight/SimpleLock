@@ -3,7 +3,7 @@ name: Create Release
 on:
   push:
     tags:
-      - '*'
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -23,4 +23,4 @@ jobs:
           body: |
             ${{ github.event.head_commit.message }}
           draft: false
-          prerelease: false
+          prerelease: true
