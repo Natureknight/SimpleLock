@@ -33,7 +33,7 @@ import java.util.Optional;
 
 /**
  * This aspect will inject the behaviour of acquiring the lock before the annotated method and
- * then release the lock only if the annotated method managed to successfully acquire the lock.
+ * then release the lock only if the annotated method managed to successfully acquire the lock
  *
  * @author Stanislav Dabov
  * @see SimpleJdbcLocked
