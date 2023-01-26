@@ -3,7 +3,10 @@ name: Create Pre-Release
 on:
   push:
     tags:
+      - 'v*.*.*-alpha*'
+      - 'v*.*.*-beta*'
       - 'v*.*.*-SNAPSHOT'
+      - 'v*.*.*-rc*'
 
 jobs:
   build:
