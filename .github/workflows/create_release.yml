@@ -23,4 +23,4 @@ jobs:
           body: |
             ${{ github.event.head_commit.message }}
           draft: false
-          prerelease: ${{ github.ref }} == *"beta"* "" ${{ github.ref }} == *"rc"* || ${{ github.ref }} == *"SNAPSHOT"*
+          prerelease: ${{ github.ref }} == *"beta"* || ${{ github.ref }} == *"rc"* || ${{ github.ref }} == *"SNAPSHOT"*
