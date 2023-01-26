@@ -25,7 +25,7 @@ import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking.
+ * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking
  *
  * @author Stanislav Dabov
  * @see SimpleJdbcLockedAspect
