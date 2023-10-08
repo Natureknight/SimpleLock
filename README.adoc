@@ -135,7 +135,6 @@ List of supported databases:
 
 | `simplelock.jdbc.enabled`            | Whether the JDBC lock is enabled                              | `true`
 | `simplelock.jdbc.auto-generate-ddl`  | Whether to automatically create the DB object(s)              | `true`
-| `simplelock.jdbc.cleanup-on-startup` | Whether to clean up DB if any existing locks are not released | `false`
 |===
 
 |===
@@ -205,7 +204,7 @@ implementation('com.github.natureknight.simplelock:simplelock-spring-starter:$ve
 
 == Customization:
 
-If you want to use custom lock implementations, simply implement `com.simplelock.api.SimpleLock` interface and register it in a configuration.
+If you want to use custom lock implementations, simply implement `api.com.simplelock.jdbc.SimpleLock` interface and register it in a configuration.
 
 == Changelog:
 
