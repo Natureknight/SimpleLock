@@ -167,7 +167,7 @@ Add the project dependency into your `pom.xml`:
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter-jdbc</artifactId>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
   </dependency>
 </dependencies>
 ----
@@ -189,7 +189,7 @@ Add the project dependency into your `build.gradle`:
 [source,groovy]
 
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter-jdbc:2.0.2')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter-jdbc:2.0.3')
 ----
 
 === Compatibility:
@@ -207,7 +207,7 @@ If you want to use custom lock implementations, simply implement `api.com.simple
 
 == Changelog:
 
-=== 2.0.2
+=== 2.0.3
 
 - Refactoring and optimized project structure
 
