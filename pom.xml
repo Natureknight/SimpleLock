@@ -59,7 +59,12 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
-        <sonar.exclusions>**/com/simplelock/api/**/*, **/*ConfigurationProperties.java, **/example/**</sonar.exclusions>
+        <sonar.exclusions>
+            **/com/simplelock/api/**/*,
+            **/*ConfigurationProperties.java,
+            **/example/**,
+            **/mongo/**
+        </sonar.exclusions>
     </properties>
 
     <developers>
