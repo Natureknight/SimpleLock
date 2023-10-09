@@ -7,12 +7,12 @@ image:https://img.shields.io/jitpack/v/github/Natureknight/SimpleLock?style=for-
 image:https://img.shields.io/badge/Spring%20Boot-2.7.5-ED8B00?style=for-the-badge&labelColor=6db33f&color=808080&logo=Spring%20Boot&logoColor=white[Spring Boot]
 image:https://img.shields.io/github/license/Natureknight/SimpleLock?style=for-the-badge&color=808080&logo=Open%20Source%20Initiative&logoColor=white[License]
 
-== SimpleLock for Spring Boot: (JDBC)
+== SimpleLock for Spring Boot: (SQL and NoSQL)
 
 Distributed lock ensures your method cannot be run in parallel from multiple JVMs (cluster of servers, microservices, ...).
 It uses a common store to keep track of used locks and your method needs to acquire lock to run.
 
-By default, locks follow methods lifecycle.They are obtained at the start of the method and released at the end of the method.
+By default, locks follow methods lifecycle. They are obtained at the start of the method and released at the end of the method.
 Manual controlling is supported and explained later in this document.
 
 All locks acquired by `SimpleLock` implementations in this project will expire after 10 seconds by default.
@@ -116,7 +116,7 @@ Method might not acquire the lock if:
 
 Project provides the following out-of-the-box `SimpleLock` implementations:
 
-* JDBC (see `JdbcSimpleLock`)
+* SQL (see `JdbcSimpleLock`)
 * NoSQL (see `MongoSimpleLock`)
 
 == Supported SQL databases:
@@ -135,20 +135,30 @@ List of supported NoSQL databases:
 
 * MongoDB
 
-=== Configuration properties: (JDBC)
-
+=== Configuration properties: (SQL)
 |===
 | Property | Description | Default
 
-| `simplelock.mongo.enabled`           | Whether the JDBC lock is enabled                              | `true`
 | `simplelock.jdbc.enabled`            | Whether the JDBC lock is enabled                              | `true`
-| `simplelock.jdbc.auto-generate-ddl`  | Whether to automatically create the DB object(s)              | `true`
+| `simplelock.jdbc.auto-generate-ddl`  | Whether to automatically create the DDL                       | `true`
 |===
 
 |===
 |Annotation
 
 |`@SimpleJdbcLocked`
+|===
+
+=== Configuration properties: (NoSQL)
+|===
+| Property | Description | Default
+
+| `simplelock.mongo.enabled`           | Whether the MongoDB lock is enabled                           | `true`
+|===
+
+|===
+|Annotation
+
 |`@SimpleMongoLocked`
 |===
 
@@ -168,7 +178,7 @@ Add the jitpack repository into your `pom.xml`:
 </repositories>
 ----
 
-Add the project dependency into your `pom.xml` for SQL:
+Use the BOM `com.github.natureknight.simplelock:simplelock-dependencies:2.1.0` or add the project dependency into your `pom.xml` for SQL:
 [source,xml]
 
 ----
@@ -207,17 +217,28 @@ repositories {
 }
 ----
 
-Add the project dependency into your `build.gradle` for SQL:
+Add the project dependency into your `build.gradle` based on your needs (choose either SQL or NoSQL):
+[source,groovy]
+
+----
+depedencyManagement {
+    imports {
+        mavenBom 'com.github.natureknight.simplelock:simplelock-dependencies:2.1.0'
+    }
+}
+
+dependencies {
+    implementation('com.github.natureknight.simplelock:simplelock-spring-starter-jdbc')
+    // or
+    implementation('com.github.natureknight.simplelock:simplelock-spring-starter-mongo')
+----
+
+Or add the project dependency into your `build.gradle` without using the BOM:
 [source,groovy]
 
 ----
 implementation('com.github.natureknight.simplelock:simplelock-spring-starter-jdbc:2.1.0')
-----
-
-Or add the project dependency into your `build.gradle` for NoSQL:
-[source,groovy]
-
-----
+// or
 implementation('com.github.natureknight.simplelock:simplelock-spring-starter-mongo:2.1.0')
 ----
 
@@ -232,7 +253,7 @@ implementation('com.github.natureknight.simplelock:simplelock-spring-starter-mon
 
 == Customization:
 
-If you want to use custom lock implementations, simply implement `api.com.simplelock.jdbc.SimpleLock` interface and register it in a configuration.
+If you want to use custom lock implementations, simply implement `com.simplelock.api.SimpleLock` interface and register it in a configuration.
 
 == Changelog:
 
