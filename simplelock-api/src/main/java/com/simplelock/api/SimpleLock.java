@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 public interface SimpleLock {
 
     /**
-     * Acquire the lock and return unique token as {@link java.util.UUID UUID} to be used for
+     * Acquire the lock and return unique token as  {@link java.util.UUID UUID} to be used for
      * releasing the lock later on.
      *
      * @param key given unique key of the lock.
