@@ -36,7 +36,7 @@ public class MongoLockedService {
 
     /**
      * Note that the lock could be released instantly after execution also
-     * by using the {@link @SimpleMongoLocked}'s attribute {@link @SimpleMongoLocked#releaseAfter()} to 0.
+     * by using the {@link SimpleMongoLocked}'s attribute {@link SimpleMongoLocked#releaseAfter()} to 0.
      */
     @Scheduled(fixedRate = 1000L)
     public void lockedMethodWithInstantRelease() {
