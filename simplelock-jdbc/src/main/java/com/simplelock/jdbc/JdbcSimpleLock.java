@@ -21,9 +21,8 @@
 
 package com.simplelock.jdbc;
 
-import com.simplelock.jdbc.api.SimpleLock;
+import com.simplelock.api.SimpleLock;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -61,7 +60,7 @@ public class JdbcSimpleLock implements SimpleLock {
                     token);
             log.debug("Acquired JDBC simple lock for key [{}]", key);
         } catch (DuplicateKeyException ex) {
-            log.warn("Could not acquire lock for key [{}], execution will be skipped.", key);
+            log.warn("Could not acquire Jdbc lock for key [{}], execution will be skipped.", key);
             return Optional.empty();
         }
 

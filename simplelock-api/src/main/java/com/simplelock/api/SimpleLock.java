@@ -19,7 +19,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.jdbc.api;
+package com.simplelock.api;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;

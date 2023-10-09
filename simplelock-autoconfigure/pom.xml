@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.github.natureknight</groupId>
         <artifactId>simplelock-parent</artifactId>
-        <version>2.0.3</version>
+        <version>2.1.0</version>
     </parent>
 
     <artifactId>simplelock-autoconfigure</artifactId>
@@ -23,6 +23,12 @@
         <dependency>
             <groupId>com.github.natureknight</groupId>
             <artifactId>simplelock-jdbc</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.natureknight</groupId>
+            <artifactId>simplelock-mongo</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
         </dependency>

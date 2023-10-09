@@ -21,7 +21,7 @@
 
 package com.simplelock.jdbc.aspect;
 
-import com.simplelock.jdbc.api.SimpleLock;
+import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

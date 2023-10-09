@@ -32,7 +32,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>simplelock-spring-starter-jdbc</artifactId>
+    <artifactId>simplelock-spring-starter-mongo</artifactId>
 
     <dependencies>
         <dependency>
@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.natureknight</groupId>
-            <artifactId>simplelock-jdbc</artifactId>
+            <artifactId>simplelock-mongo</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.reporting</groupId>

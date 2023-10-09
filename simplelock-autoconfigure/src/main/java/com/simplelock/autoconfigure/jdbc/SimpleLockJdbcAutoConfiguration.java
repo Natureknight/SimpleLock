@@ -21,7 +21,7 @@
 
 package com.simplelock.autoconfigure.jdbc;
 
-import com.simplelock.jdbc.api.SimpleLock;
+import com.simplelock.api.SimpleLock;
 import com.simplelock.jdbc.aspect.SimpleJdbcLockedAspect;
 import com.simplelock.jdbc.JdbcSimpleLock;
 import org.springframework.boot.autoconfigure.AutoConfiguration;

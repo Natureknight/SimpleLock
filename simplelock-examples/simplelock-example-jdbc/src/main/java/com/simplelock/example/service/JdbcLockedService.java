@@ -19,11 +19,10 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.example.service.impl;
+package com.simplelock.example.service;
 
-import com.simplelock.jdbc.api.SimpleLock;
+import com.simplelock.api.SimpleLock;
 import com.simplelock.jdbc.aspect.SimpleJdbcLocked;
-import com.simplelock.example.service.ExampleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -40,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class LockedExampleService implements ExampleService {
+public class JdbcLockedService {
 
     private final SimpleLock simpleLock;
 
@@ -49,7 +48,6 @@ public class LockedExampleService implements ExampleService {
      */
     @Scheduled(fixedRate = 1000L)
     @SimpleJdbcLocked
-    @Override
     public void lockedMethodWithDefaultRelease() {
         log.info("Invoke [lockedMethodWithDefaultRelease] with distributed lock");
     }
@@ -59,7 +57,6 @@ public class LockedExampleService implements ExampleService {
      */
     @Scheduled(fixedRate = 1000L)
     @SimpleJdbcLocked(releaseAfter = 5000L, timeUnit = TimeUnit.MILLISECONDS)
-    @Override
     public void lockedMethodWithCustomReleaseDelay() {
         log.info("Invoke [lockedMethodWithCustomReleaseDelay] with distributed lock");
     }
@@ -69,7 +66,6 @@ public class LockedExampleService implements ExampleService {
      * by using the {@link SimpleJdbcLocked}'s attribute {@link SimpleJdbcLocked#releaseAfter()} to 0.
      */
     @Scheduled(fixedRate = 1000L)
-    @Override
     public void lockedMethodWithInstantRelease() {
         simpleLock.acquireWithKeyPrefix("lockedMethodWithInstantRelease", "unique-key")
                 .ifPresent(token -> {

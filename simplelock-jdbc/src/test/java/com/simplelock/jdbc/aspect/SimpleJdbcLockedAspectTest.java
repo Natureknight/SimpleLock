@@ -22,7 +22,7 @@
 package com.simplelock.jdbc.aspect;
 
 import com.simplelock.jdbc.JdbcSimpleLock;
-import com.simplelock.jdbc.api.SimpleLock;
+import com.simplelock.api.SimpleLock;
 import com.simplelock.jdbc.common.BaseJdbcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
