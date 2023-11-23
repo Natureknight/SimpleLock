@@ -186,7 +186,7 @@ Use the BOM `com.github.natureknight.simplelock:simplelock-dependencies:2.1.0` o
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter-jdbc</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.2</version>
   </dependency>
 </dependencies>
 ----
@@ -199,7 +199,7 @@ Or add the project dependency into your `pom.xml` for NoSQL:
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter-mongo</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.2</version>
   </dependency>
 </dependencies>
 ----

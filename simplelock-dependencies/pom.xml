@@ -6,10 +6,11 @@
     <parent>
         <groupId>com.github.natureknight</groupId>
         <artifactId>simplelock-parent</artifactId>
-        <version>2.1.0</version>
+        <version>2.1.2</version>
     </parent>
 
     <artifactId>simplelock-dependencies</artifactId>
+    <version>2.1.2</version>
 
     <dependencyManagement>
         <dependencies>
