@@ -41,13 +41,21 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 public class SimpleLockMongoAutoConfiguration {
 
     @Bean
-    public SimpleMongoLockedAspect simpleJdbcLockedAspect(final SimpleLock simpleLock) {
-        return new SimpleMongoLockedAspect(simpleLock);
+    public SimpleMongoLockedAspect simpleJdbcLockedAspect(
+            SimpleLock simpleLock,
+            SimpleLockMongoConfigurationProperties properties) {
+        return new SimpleMongoLockedAspect(simpleLock, properties.getExpiry().getReleaseStrategy());
     }
 
     @ConditionalOnMissingBean
     @Bean
-    public SimpleLock simpleLock(MongoTemplate mongoTemplate) {
-        return new MongoSimpleLock(mongoTemplate);
+    public SimpleLock simpleLock(
+            MongoTemplate mongoTemplate,
+            SimpleLockMongoConfigurationProperties properties) {
+
+        return new MongoSimpleLock(mongoTemplate,
+                properties.getExpiry().getMinDelay(),
+                properties.getExpiry().getTimeUnit()
+        );
     }
 }

@@ -38,12 +38,17 @@ public enum JdbcSimpleLockQuery {
     /**
      * Query to acquire the lock. Could fail with UK constraint violation on `lock_key` column.
      */
-    ACQUIRE("INSERT INTO simple_lock (id, lock_key, token) VALUES (?, ?, ?)"),
+    ACQUIRE("INSERT INTO simple_lock (id, lock_key, created_at, token) VALUES (?, ?, ?, ?)"),
 
     /**
      * Release the lock by given token, which is the result from acquire operation.
      */
     RELEASE("DELETE FROM simple_lock WHERE token = ?"),
+
+    /**
+     * Cleanup old locks.
+     */
+    CLEANUP("DELETE FROM simple_lock WHERE created_at = ?"),
 
     /**
      * Delete all locks on service startup.

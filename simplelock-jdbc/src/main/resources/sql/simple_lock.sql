@@ -20,7 +20,11 @@
  */
 
 CREATE TABLE IF NOT EXISTS simple_lock (
-    id        VARCHAR(36)   PRIMARY KEY  NOT NULL,
-    lock_key  VARCHAR(255)  UNIQUE       NOT NULL,
-    token     VARCHAR(36)                NOT NULL
+    id         VARCHAR(36)   PRIMARY KEY  NOT NULL,
+    lock_key   VARCHAR(255)  UNIQUE       NOT NULL,
+    created_at TIMESTAMP(3)               NOT NULL,
+    token      VARCHAR(36)                NOT NULL
 );
+
+-- This index is needed for the cleanup job
+CREATE INDEX IF NOT EXISTS idx_created_at ON simple_lock (created_at);

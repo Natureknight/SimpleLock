@@ -21,28 +21,26 @@
 
 package com.simplelock.jdbc;
 
+import com.simplelock.api.ReleaseStrategy;
 import com.simplelock.api.SimpleLock;
 import com.simplelock.jdbc.aspect.SimpleJdbcLockedAspect;
 import com.simplelock.jdbc.common.BaseJdbcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -64,19 +62,7 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
             // then
             assertThat(tokenOptional).isPresent();
             verify(jdbcTemplate, times(1)).update(eq(JdbcSimpleLockQuery.ACQUIRE.getQuery()),
-                    anyString(), eq(UNIQUE_KEY), eq(tokenOptional.get()));
-        }
-
-        @Test
-        void acquireForCurrentMethod_shouldAppendMethodNamePrefixToKey() {
-            // when
-            Optional<String> tokenOptional = simpleLock.acquireWithKeyPrefix(
-                    "methodName", UNIQUE_KEY);
-
-            // then
-            assertThat(tokenOptional).isPresent();
-            verify(jdbcTemplate, times(1)).update(eq(JdbcSimpleLockQuery.ACQUIRE.getQuery()),
-                    anyString(), eq("methodName-" + UNIQUE_KEY), eq(tokenOptional.get()));
+                    anyString(), eq(UNIQUE_KEY), any(LocalDateTime.class), eq(tokenOptional.get()));
         }
 
         @DisplayName("Acquire lock twice for the same key won't return token for the second attempt")
@@ -90,7 +76,7 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
             assertThat(tokenOptional1).isPresent();
             assertThat(tokenOptional2).isEmpty();
             verify(jdbcTemplate, times(1)).update(eq(JdbcSimpleLockQuery.ACQUIRE.getQuery()),
-                    anyString(), eq(UNIQUE_KEY), eq(tokenOptional1.get()));
+                    anyString(), eq(UNIQUE_KEY), any(LocalDateTime.class), eq(tokenOptional1.get()));
         }
     }
 
@@ -105,7 +91,7 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
             assertTrue(tokenOptional.isPresent());
 
             // when
-            simpleLock.releaseImmediately(tokenOptional.get());
+            simpleLock.release(tokenOptional.get());
 
             // then
             assertTrue(lockReleased(jdbcTemplate));
@@ -119,27 +105,10 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
             assertTrue(tokenOptional.isPresent());
 
             // when
-            simpleLock.release(tokenOptional.get(), 0L, TimeUnit.SECONDS);
+            simpleLock.release(tokenOptional.get());
 
             // then
             assertTrue(lockReleased(jdbcTemplate));
-        }
-
-        @DisplayName("Acquire and release the lock with delay, should delete lock record from DB after the delay")
-        @ParameterizedTest
-        @ValueSource(longs = {100L, 1000L})
-        void releaseLockWithDelay_successful(long delay) {
-            // given
-            var tokenOptional = simpleLock.acquire(UNIQUE_KEY);
-            assertTrue(tokenOptional.isPresent());
-
-            // when
-            simpleLock.release(tokenOptional.get(), delay, TimeUnit.MILLISECONDS);
-
-            // then
-            assertNotNull(jdbcTemplate.queryForObject(SELECT_QUERY, ROW_MAPPER));
-            assertFalse(lockReleased(jdbcTemplate));
-            await().atLeast(delay, TimeUnit.MILLISECONDS).until(() -> lockReleased(jdbcTemplate));
         }
     }
 
@@ -153,7 +122,7 @@ class JdbcSimpleLockTest extends BaseJdbcTest {
 
         @Bean
         public SimpleJdbcLockedAspect simpleJdbcLockedAspect(SimpleLock simpleLock) {
-            return new SimpleJdbcLockedAspect(simpleLock);
+            return new SimpleJdbcLockedAspect(simpleLock, ReleaseStrategy.WITHOUT_DELAY);
         }
     }
 }

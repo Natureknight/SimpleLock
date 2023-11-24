@@ -19,43 +19,30 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.autoconfigure.mongo;
+package com.simplelock.jdbc.service;
 
-import com.simplelock.api.ReleaseStrategy;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@ConfigurationProperties(prefix = "simplelock.mongo")
-public class SimpleLockMongoConfigurationProperties {
+import static com.simplelock.jdbc.JdbcSimpleLockQuery.CLEANUP;
 
-    /**
-     * Whether the Mongo simple lock is enabled.
-     * Default: true
-     */
-    private boolean enabled = true;
+@RequiredArgsConstructor
+public class JdbcCleanupService {
 
-    /**
-     * Expiry properties. Keep in mind MongoDB TTL runs every minute, so the delay
-     * could not be less than a minute.
-     */
-    private Expiry expiry = new Expiry();
+    private final JdbcTemplate jdbcTemplate;
+    private final long minDelay;
+    private final TimeUnit timeUnit;
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public static class Expiry {
-
-        private ReleaseStrategy releaseStrategy = ReleaseStrategy.WITHOUT_DELAY;
-
-        private long minDelay = 1L;
-
-        private TimeUnit timeUnit = TimeUnit.DAYS;
+    @Scheduled(cron = "@midnight")
+    public void cleanup() {
+        jdbcTemplate.update(CLEANUP.getQuery(),
+                LocalDateTime.now().minus(
+                        minDelay,
+                        timeUnit.toChronoUnit())
+        );
     }
 }

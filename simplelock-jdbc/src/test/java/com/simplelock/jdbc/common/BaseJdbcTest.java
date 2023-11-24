@@ -32,6 +32,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 @Sql(statements = "DROP TABLE simple_lock", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @Sql(scripts = "/sql/simple_lock.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @DirtiesContext
@@ -43,7 +47,8 @@ public abstract class BaseJdbcTest {
     protected static final RowMapper<SimpleLockRow> ROW_MAPPER = (rs, rowNum) -> SimpleLockRow.builder()
             .id(rs.getString(1))
             .lockKey(rs.getString(2))
-            .token(rs.getString(3))
+            .createdAt(Instant.ofEpochMilli(rs.getDate(3).getTime()).atZone(ZoneOffset.UTC).toLocalDateTime())
+            .token(rs.getString(4))
             .build();
 
     @SpyBean
@@ -68,6 +73,7 @@ public abstract class BaseJdbcTest {
 
         private String id;
         private String lockKey;
+        private LocalDateTime createdAt;
         private String token;
     }
 }

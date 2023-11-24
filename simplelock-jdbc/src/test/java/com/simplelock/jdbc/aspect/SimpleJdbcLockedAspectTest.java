@@ -21,12 +21,12 @@
 
 package com.simplelock.jdbc.aspect;
 
-import com.simplelock.jdbc.JdbcSimpleLock;
+import com.simplelock.api.ReleaseStrategy;
 import com.simplelock.api.SimpleLock;
+import com.simplelock.jdbc.JdbcSimpleLock;
 import com.simplelock.jdbc.common.BaseJdbcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,9 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(properties = {
         "spring.datasource.url=jdbc:h2:mem:demo",
@@ -63,8 +61,8 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         dummyClassUsingAspect.lockedMethod();
 
         // then
-        verify(jdbcSimpleLock, times(1)).acquireWithKeyPrefix("lockedMethod", UNIQUE_KEY);
-        verify(jdbcSimpleLock, times(1)).release(anyString(), eq(10L), eq(TimeUnit.SECONDS));
+        verify(jdbcSimpleLock, times(1)).acquire("lockedMethod-" + UNIQUE_KEY);
+        verify(jdbcSimpleLock, never()).release(anyString());
     }
 
     @DisplayName("Acquire lock with 100ms release delay should release the lock after the delay have passed")
@@ -74,9 +72,9 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         dummyClassUsingAspect.lockedMethodWithCustomReleaseDelay();
 
         // then
-        verify(jdbcSimpleLock, times(1)).acquireWithKeyPrefix(
-                "lockedMethodWithCustomReleaseDelay", UNIQUE_KEY);
-        verify(jdbcSimpleLock, times(1)).release(anyString(), eq(100L), eq(TimeUnit.MILLISECONDS));
+        verify(jdbcSimpleLock, times(1)).acquire(
+                "lockedMethodWithCustomReleaseDelay-" + UNIQUE_KEY);
+        verify(jdbcSimpleLock, times(1)).release(anyString());
         await().atLeast(100L, TimeUnit.MILLISECONDS).until(() -> BaseJdbcTest.lockReleased(jdbcTemplate));
     }
 
@@ -88,9 +86,9 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         dummyClassUsingAspect.lockedMethod();
 
         // then
-        verify(jdbcSimpleLock, times(2)).acquireWithKeyPrefix("lockedMethod", UNIQUE_KEY);
         verify(jdbcSimpleLock, times(2)).acquire("lockedMethod-" + UNIQUE_KEY);
-        verify(jdbcSimpleLock, times(1)).release(anyString(), ArgumentMatchers.anyLong(), ArgumentMatchers.any(TimeUnit.class));
+        verify(jdbcSimpleLock, times(2)).acquire("lockedMethod-" + UNIQUE_KEY);
+        verify(jdbcSimpleLock, never()).release(anyString());
     }
 
     @DisplayName("Locked method with instant release of the acquired lock")
@@ -99,21 +97,21 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
         // when
         dummyClassUsingAspect.lockedMethodWithInstantRelease();
 
-        verify(jdbcSimpleLock, times(1)).acquireWithKeyPrefix("lockedMethodWithInstantRelease", UNIQUE_KEY);
-        verify(jdbcSimpleLock, times(1)).releaseImmediately(anyString());
+        verify(jdbcSimpleLock, times(1)).acquire("lockedMethodWithInstantRelease-" + UNIQUE_KEY);
+        verify(jdbcSimpleLock, times(1)).release(anyString());
     }
 
     static class DummyClassUsingAspect {
 
-        @SimpleJdbcLocked
+        @SimpleJdbcLocked(releaseStrategy = ReleaseStrategy.WITH_DELAY)
         public void lockedMethod() {
         }
 
-        @SimpleJdbcLocked(releaseAfter = 100L, timeUnit = TimeUnit.MILLISECONDS)
+        @SimpleJdbcLocked
         public void lockedMethodWithCustomReleaseDelay() {
         }
 
-        @SimpleJdbcLocked(releaseImmediately = true)
+        @SimpleJdbcLocked
         public void lockedMethodWithInstantRelease() {
         }
     }
@@ -128,7 +126,7 @@ class SimpleJdbcLockedAspectTest extends BaseJdbcTest {
 
         @Bean
         public SimpleJdbcLockedAspect simpleJdbcLockedAspect(SimpleLock simpleLock) {
-            return new SimpleJdbcLockedAspect(simpleLock);
+            return new SimpleJdbcLockedAspect(simpleLock, ReleaseStrategy.WITHOUT_DELAY);
         }
     }
 }

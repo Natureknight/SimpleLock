@@ -22,7 +22,6 @@
 package com.simplelock.api;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Common interface to define API for locking.
@@ -43,40 +42,9 @@ public interface SimpleLock {
     Optional<String> acquire(String key);
 
     /**
-     * Similar to {@link SimpleLock#acquire(String)}, but will also include the key prefix
-     * in the key so same unique key could be used, but it will behave like a different lock
-     * if e.g. invoked from different methods.
-     *
-     * @param keyPrefix given key prefix e.g. invocation method name
-     * @param key       given unique key suffix of the lock
-     * @return the lock token
-     */
-    Optional<String> acquireWithKeyPrefix(String keyPrefix, String key);
-
-    /**
-     * Release the lock with the default delay by given token
+     * Release the lock immediately.
      *
      * @param token given token
      */
-    default void release(String token) {
-        release(token, 10L, TimeUnit.SECONDS);
-    }
-
-    /**
-     * Release the lock immediately
-     *
-     * @param token given token
-     */
-    void releaseImmediately(String token);
-
-    /**
-     * Release the lock by given lock token. Lock will be released synchronously in case
-     * the {@code releaseAfter} is set to zero, and asynchronously if {@code releaseAfter} is
-     * bigger than zero.
-     *
-     * @param token        lock token to unlock
-     * @param releaseAfter time period until we release the lock
-     * @param timeUnit     chosen {@link TimeUnit}
-     */
-    void release(String token, long releaseAfter, TimeUnit timeUnit);
+    void release(String token);
 }

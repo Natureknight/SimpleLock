@@ -26,8 +26,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.time.LocalDateTime;
+
+import static com.simplelock.mongo.MongoSimpleLock.EXPIRY_INDEX_NAME;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,6 +43,8 @@ public class SimpleLockDocument {
 
     @MongoId
     private ObjectId id;
+    @Indexed(name = EXPIRY_INDEX_NAME, unique = true)
     private String lockKey;
     private String token;
+    private LocalDateTime createdAt;
 }

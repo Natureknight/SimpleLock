@@ -21,6 +21,7 @@
 
 package com.simplelock.jdbc.aspect;
 
+import com.simplelock.api.ReleaseStrategy;
 import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,7 @@ public class SimpleJdbcLockedAspect {
     private static final String UNIQUE_KEY = "aop-unique-key";
 
     private final SimpleLock simpleLock;
+    private final ReleaseStrategy releaseStrategy;
 
     @Around("@annotation(com.simplelock.jdbc.aspect.SimpleJdbcLocked)")
     public Object intercept(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -58,21 +60,22 @@ public class SimpleJdbcLockedAspect {
                 SimpleJdbcLocked.class.getSimpleName());
 
         // Try to acquire lock by using just the method name as unique key
-        Optional<String> tokenOptional = simpleLock.acquireWithKeyPrefix(
-                signature.getMethod().getName(), UNIQUE_KEY);
+        Optional<String> tokenOptional = simpleLock.acquire(
+                signature.getMethod().getName() + "-" + UNIQUE_KEY);
 
         if (tokenOptional.isPresent()) {
             // Proceed with execution if lock successfully acquired
             Object result = joinPoint.proceed();
 
-            // Instantly release the lock after execution
-            if (annotation.releaseImmediately() || annotation.releaseAfter() == 0L) {
-                simpleLock.releaseImmediately(tokenOptional.get());
+            if (annotation.releaseStrategy() == ReleaseStrategy.WITHOUT_DELAY
+                    || annotation.releaseStrategy() == ReleaseStrategy.NOT_SPECIFIED
+                    && releaseStrategy == ReleaseStrategy.WITHOUT_DELAY) {
+                simpleLock.release(tokenOptional.get());
                 return result;
             }
 
-            // Or release the lock with the specified delay
-            simpleLock.release(tokenOptional.get(), annotation.releaseAfter(), annotation.timeUnit());
+            // leave releasing the lock to the cleanup service after the
+            // configured cleanup delay
             return result;
         }
 

@@ -26,17 +26,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.lang.NonNull;
 
-import java.util.Locale;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static com.simplelock.jdbc.JdbcSimpleLockQuery.ACQUIRE;
 import static com.simplelock.jdbc.JdbcSimpleLockQuery.RELEASE;
-import static java.util.concurrent.CompletableFuture.delayedExecutor;
-import static java.util.concurrent.CompletableFuture.runAsync;
 
 /**
  * Default implementation of {@link SimpleLock}
@@ -57,6 +54,7 @@ public class JdbcSimpleLock implements SimpleLock {
             jdbcTemplate.update(ACQUIRE.getQuery(),
                     UUID.randomUUID().toString(),
                     key,
+                    LocalDateTime.now(Clock.systemUTC()),
                     token);
             log.debug("Acquired JDBC simple lock for key [{}]", key);
         } catch (DuplicateKeyException ex) {
@@ -68,32 +66,7 @@ public class JdbcSimpleLock implements SimpleLock {
     }
 
     @Override
-    public Optional<String> acquireWithKeyPrefix(
-            @NonNull String keyPrefix,
-            @NonNull String key) {
-
-        return acquire(keyPrefix + "-" + key);
-    }
-
-    @Override
-    public void releaseImmediately(String token) {
-        log.debug("Lock for token [{}] will be released immediately", token);
+    public void release(String token) {
         jdbcTemplate.update(RELEASE.getQuery(), token);
-    }
-
-    @Override
-    public void release(String token, long releaseAfter, TimeUnit timeUnit) {
-        if (releaseAfter == 0L) {
-            log.info("Releasing a lock for token [{}] with delay of 0, using releaseImmediately instead", token);
-            releaseImmediately(token);
-            return;
-        }
-
-        log.debug("Lock will be released for token [{}] after [{}] {}", token,
-                releaseAfter,
-                timeUnit.toString().toLowerCase(Locale.ROOT));
-
-        runAsync(() -> jdbcTemplate.update(RELEASE.getQuery(), token),
-                delayedExecutor(releaseAfter, timeUnit));
     }
 }

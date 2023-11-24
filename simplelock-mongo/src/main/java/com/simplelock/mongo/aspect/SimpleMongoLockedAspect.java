@@ -21,6 +21,7 @@
 
 package com.simplelock.mongo.aspect;
 
+import com.simplelock.api.ReleaseStrategy;
 import com.simplelock.api.SimpleLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,7 @@ public class SimpleMongoLockedAspect {
     private static final String UNIQUE_KEY = "aop-unique-key";
 
     private final SimpleLock simpleLock;
+    private final ReleaseStrategy releaseStrategy;
 
     @Around("@annotation(com.simplelock.mongo.aspect.SimpleMongoLocked)")
     public Object intercept(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -50,21 +52,24 @@ public class SimpleMongoLockedAspect {
                 SimpleMongoLocked.class.getSimpleName());
 
         // Try to acquire lock by using just the method name as unique key
-        Optional<String> tokenOptional = simpleLock.acquireWithKeyPrefix(
-                signature.getMethod().getName(), UNIQUE_KEY);
+        Optional<String> tokenOptional = simpleLock.acquire(
+                signature.getMethod().getName() + "-" + UNIQUE_KEY);
 
         if (tokenOptional.isPresent()) {
             // Proceed with execution if lock successfully acquired
             Object result = joinPoint.proceed();
 
             // Instantly release the lock after execution
-            if (annotation.releaseImmediately() || annotation.releaseAfter() == 0L) {
-                simpleLock.releaseImmediately(tokenOptional.get());
+            if (annotation.releaseStrategy() == ReleaseStrategy.WITHOUT_DELAY
+                    || annotation.releaseStrategy() == ReleaseStrategy.NOT_SPECIFIED
+                    && releaseStrategy == ReleaseStrategy.WITHOUT_DELAY) {
+                simpleLock.release(tokenOptional.get());
                 return result;
             }
 
-            // Or release the lock with the specified delay
-            simpleLock.release(tokenOptional.get(), annotation.releaseAfter(), annotation.timeUnit());
+            // Don't explicitly release for MongoDB, instead the index will
+            // ensure that the lock document will expire based on the values set
+            // in the configuration properties
             return result;
         }
 

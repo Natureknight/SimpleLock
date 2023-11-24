@@ -19,43 +19,22 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.autoconfigure.mongo;
+package com.simplelock.api;
 
-import com.simplelock.api.ReleaseStrategy;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.concurrent.TimeUnit;
-
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@ConfigurationProperties(prefix = "simplelock.mongo")
-public class SimpleLockMongoConfigurationProperties {
+/**
+ * Release strategy for locks.
+ *
+ * @author Stanislav Dabov
+ * @since 2.1.2
+ */
+public enum ReleaseStrategy {
 
     /**
-     * Whether the Mongo simple lock is enabled.
-     * Default: true
+     * Not explicitly specified at annotation level, use properties instead.
      */
-    private boolean enabled = true;
+    NOT_SPECIFIED,
 
-    /**
-     * Expiry properties. Keep in mind MongoDB TTL runs every minute, so the delay
-     * could not be less than a minute.
-     */
-    private Expiry expiry = new Expiry();
+    WITH_DELAY,
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public static class Expiry {
-
-        private ReleaseStrategy releaseStrategy = ReleaseStrategy.WITHOUT_DELAY;
-
-        private long minDelay = 1L;
-
-        private TimeUnit timeUnit = TimeUnit.DAYS;
-    }
+    WITHOUT_DELAY
 }

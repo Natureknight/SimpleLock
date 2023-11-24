@@ -22,8 +22,10 @@
 package com.simplelock.autoconfigure.jdbc;
 
 import com.simplelock.api.SimpleLock;
-import com.simplelock.jdbc.aspect.SimpleJdbcLockedAspect;
 import com.simplelock.jdbc.JdbcSimpleLock;
+import com.simplelock.jdbc.aspect.SimpleJdbcLockedAspect;
+import com.simplelock.jdbc.service.JdbcCleanupService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -35,6 +37,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.sql.DataSource;
 
@@ -52,14 +55,35 @@ import javax.sql.DataSource;
 public class SimpleLockJdbcAutoConfiguration {
 
     @Bean
-    public SimpleJdbcLockedAspect simpleJdbcLockedAspect(final SimpleLock simpleLock) {
-        return new SimpleJdbcLockedAspect(simpleLock);
+    public SimpleJdbcLockedAspect simpleJdbcLockedAspect(
+            SimpleLock simpleLock,
+            SimpleLockJdbcConfigurationProperties properties) {
+        return new SimpleJdbcLockedAspect(simpleLock, properties.getExpiry().getReleaseStrategy());
     }
 
     @ConditionalOnMissingBean
     @Bean
     public SimpleLock simpleLock(JdbcTemplate jdbcTemplate) {
         return new JdbcSimpleLock(jdbcTemplate);
+    }
+
+    @AutoConfiguration
+    @EnableConfigurationProperties(SimpleLockJdbcConfigurationProperties.class)
+    @ConditionalOnClass(JdbcTemplate.class)
+    @EnableScheduling
+    public static class SimpleJdbcLockCleanupConfiguration {
+
+        @ConditionalOnMissingBean
+        @Bean
+        public JdbcCleanupService jdbcCleanupService(
+                JdbcTemplate jdbcTemplate,
+                SimpleLockJdbcConfigurationProperties properties) {
+
+            return new JdbcCleanupService(
+                    jdbcTemplate,
+                    properties.getExpiry().getMinDelay(),
+                    properties.getExpiry().getTimeUnit());
+        }
     }
 
     /**

@@ -21,7 +21,6 @@ These options are customizable.
 === Manually controlled locks:
 
 Use the `releaseAfter` attribute to control the duration of holding the lock (default is 10 seconds) +
-Use the `releaseImmediately` to release the lock right after execution.
 Note this flag will override the `releaseAfter` if set altogether
 
 ==== Example
@@ -36,17 +35,17 @@ Using `@SimpleJdbcLocked` annotation:
 public class MyJdbcLockedService {
 
     /**
-     * Invoke with distributed JDBC lock, by holding the lock for 5 minutes
+     * Invoke with distributed JDBC lock, by holding the lock.
      */
-    @SimpleJdbcLocked(releaseAfter = 5L, timeUnit = TimeUnit.MINUTES)
+    @SimpleJdbcLocked
     public void doSomething() {
         // locked method body
     }
 
     /**
-     * Invoke with distributed JDBC lock, by releasing the lock immediately
+     * Invoke with distributed JDBC lock, by releasing the lock immediately.
      */
-    @SimpleJdbcLocked(releaseImmediately = true)
+    @SimpleJdbcLocked(releaseStrategy = ReleaseStrategy.WITHOUT_DELAY)
     public void doSomethingElse() {
         // locked method body
     }
@@ -64,40 +63,13 @@ public class MyJdbcLockedService {
 
     private final SimpleLock simpleLock;
 
-    /**
-     * Invoke with distributed JDBC lock, by holding the lock for 5 minutes
-     */
-    public void doSomething() {
-        Optional<String> tokenOptional = simpleLock.acquire("my-unique-lock-key");
-        // IMPORTANT: lock has been acquired successfully only if the token is present,
-        // so make sure you have this check wrapping your service logic that needs to be locked
-        if (tokenOptional.isEmpty()) {
-            return;
-        }
-
-        log.info("Some action executed concurrently");
-
-        // IMPORTANT: Don't forget to release your lock after execution, unless your requirement
-        // is to have it locked forever for some reason
-        simpleLock.release(tokenOptional.get(), 5L, TimeUnit.MINUTES);
-    }
-
-    /**
-     * Invoke with distributed JDBC lock, by releasing the lock immediately.
-     * By using acquireWithKeyPrefix, you will be able to lock another action(s)
-     * for the same business ID, as the actual lock key in this case
-     * will be "doSomething-KEY" where KEY will be the actual business ID
-     */
     public void doSomething(UUID id) {
-        simpleLock.acquireWithKeyPrefix("doSomething", id.toString())
+        simpleLock.acquire(id.toString())
                 // IMPORTANT: lock has been acquired successfully only if the token is present,
                 // so make sure you have this check wrapping your service logic that needs to be locked
                 .ifPresent(token -> {
                     log.info("Some action executed concurrently for id={}", id);
-
-                    // IMPORTANT: Don't forget to release your lock after execution, unless
-                    // your requirement is to have it locked forever for some reason
-                    simpleLock.releaseImmediately(token);
+                    simpleLock.release(token);
                 });
     }
 }
@@ -139,8 +111,11 @@ List of supported NoSQL databases:
 |===
 | Property | Description | Default
 
-| `simplelock.jdbc.enabled`            | Whether the JDBC lock is enabled                              | `true`
-| `simplelock.jdbc.auto-generate-ddl`  | Whether to automatically create the DDL                       | `true`
+| `simplelock.jdbc.enabled`           | Whether the JDBC lock is enabled                              | `true`
+| `simplelock.jdbc.expiry.enabled`    | Whether the lock expiry is enabled                            | `true`
+| `simplelock.jdbc.expiry.release-strategy`    | Whether the release strategy is with_delay or without_delay   | `true`
+| `simplelock.jdbc.expiry.min-delay`    | Expiry delay                                                | `true`
+| `simplelock.jdbc.expiry.time-unit`    | Time unit of the expiry delay                               | `true`
 |===
 
 |===
@@ -154,6 +129,10 @@ List of supported NoSQL databases:
 | Property | Description | Default
 
 | `simplelock.mongo.enabled`           | Whether the MongoDB lock is enabled                           | `true`
+| `simplelock.mongo.expiry.enabled`    | Whether the lock expiry is enabled                            | `true`
+| `simplelock.mongo.expiry.release-strategy`    | Whether the release strategy is with_delay or without_delay   | `true`
+| `simplelock.mongo.expiry.min-delay`    | Expiry delay                                                | `true`
+| `simplelock.mongo.expiry.time-unit`    | Time unit of the expiry delay                               | `true`
 |===
 
 |===
@@ -178,7 +157,7 @@ Add the jitpack repository into your `pom.xml`:
 </repositories>
 ----
 
-Use the BOM `com.github.natureknight.simplelock:simplelock-dependencies:2.1.0` or add the project dependency into your `pom.xml` for SQL:
+Use the BOM `com.github.natureknight.simplelock:simplelock-dependencies:3.0.0` or add the project dependency into your `pom.xml` for SQL:
 [source,xml]
 
 ----
@@ -186,7 +165,7 @@ Use the BOM `com.github.natureknight.simplelock:simplelock-dependencies:2.1.0` o
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter-jdbc</artifactId>
-    <version>2.1.2</version>
+    <version>3.0.0</version>
   </dependency>
 </dependencies>
 ----
@@ -199,7 +178,7 @@ Or add the project dependency into your `pom.xml` for NoSQL:
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter-mongo</artifactId>
-    <version>2.1.2</version>
+    <version>3.0.0</version>
   </dependency>
 </dependencies>
 ----
@@ -223,7 +202,7 @@ Add the project dependency into your `build.gradle` based on your needs (choose 
 ----
 depedencyManagement {
     imports {
-        mavenBom 'com.github.natureknight.simplelock:simplelock-dependencies:2.1.0'
+        mavenBom 'com.github.natureknight.simplelock:simplelock-dependencies:3.0.0'
     }
 }
 
@@ -237,9 +216,9 @@ Or add the project dependency into your `build.gradle` without using the BOM:
 [source,groovy]
 
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter-jdbc:2.1.0')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter-jdbc:3.0.0')
 // or
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter-mongo:2.1.0')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter-mongo:3.0.0')
 ----
 
 === Compatibility:
@@ -256,6 +235,12 @@ implementation('com.github.natureknight.simplelock:simplelock-spring-starter-mon
 If you want to use custom lock implementations, simply implement `com.simplelock.api.SimpleLock` interface and register it in a configuration.
 
 == Changelog:
+
+== 3.0.0
+
+- Simplify project's logic
+- Fixed minor issue related to MongoDB index creating
+- Cleanup
 
 === 2.1.0
 
