@@ -113,9 +113,9 @@ List of supported NoSQL databases:
 
 | `simplelock.jdbc.enabled`           | Whether the JDBC lock is enabled                              | `true`
 | `simplelock.jdbc.expiry.enabled`    | Whether the lock expiry is enabled                            | `true`
-| `simplelock.jdbc.expiry.release-strategy`    | Whether the release strategy is with_delay or without_delay   | `true`
-| `simplelock.jdbc.expiry.min-delay`    | Expiry delay                                                | `true`
-| `simplelock.jdbc.expiry.time-unit`    | Time unit of the expiry delay                               | `true`
+| `simplelock.jdbc.expiry.release-strategy`    | Whether the release strategy is with_delay or without_delay   | `without_delay`
+| `simplelock.jdbc.expiry.min-delay`    | Expiry delay                                                | `1`
+| `simplelock.jdbc.expiry.time-unit`    | Time unit of the expiry delay                               | `days`
 |===
 
 |===
@@ -130,9 +130,9 @@ List of supported NoSQL databases:
 
 | `simplelock.mongo.enabled`           | Whether the MongoDB lock is enabled                           | `true`
 | `simplelock.mongo.expiry.enabled`    | Whether the lock expiry is enabled                            | `true`
-| `simplelock.mongo.expiry.release-strategy`    | Whether the release strategy is with_delay or without_delay   | `true`
-| `simplelock.mongo.expiry.min-delay`    | Expiry delay                                                | `true`
-| `simplelock.mongo.expiry.time-unit`    | Time unit of the expiry delay                               | `true`
+| `simplelock.mongo.expiry.release-strategy`    | Whether the release strategy is with_delay or without_delay   | `without_delay`
+| `simplelock.mongo.expiry.min-delay`    | Expiry delay                                                | `1`
+| `simplelock.mongo.expiry.time-unit`    | Time unit of the expiry delay                               | `days`
 |===
 
 |===
