@@ -157,7 +157,7 @@ Add the jitpack repository into your `pom.xml`:
 </repositories>
 ----
 
-Use the BOM `com.github.natureknight.simplelock:simplelock-dependencies:3.0.1` or add the project dependency into your `pom.xml` for SQL:
+Use the BOM `com.github.natureknight.simplelock:simplelock-dependencies:3.0.2` or add the project dependency into your `pom.xml` for SQL:
 [source,xml]
 
 ----
@@ -165,7 +165,7 @@ Use the BOM `com.github.natureknight.simplelock:simplelock-dependencies:3.0.1` o
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter-jdbc</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
   </dependency>
 </dependencies>
 ----
@@ -178,7 +178,7 @@ Or add the project dependency into your `pom.xml` for NoSQL:
   <dependency>
     <groupId>com.github.natureknight.simplelock</groupId>
     <artifactId>simplelock-spring-starter-mongo</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
   </dependency>
 </dependencies>
 ----
@@ -202,7 +202,7 @@ Add the project dependency into your `build.gradle` based on your needs (choose 
 ----
 depedencyManagement {
     imports {
-        mavenBom 'com.github.natureknight.simplelock:simplelock-dependencies:3.0.1'
+        mavenBom 'com.github.natureknight.simplelock:simplelock-dependencies:3.0.2'
     }
 }
 
@@ -216,9 +216,9 @@ Or add the project dependency into your `build.gradle` without using the BOM:
 [source,groovy]
 
 ----
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter-jdbc:3.0.1')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter-jdbc:3.0.2')
 // or
-implementation('com.github.natureknight.simplelock:simplelock-spring-starter-mongo:3.0.1')
+implementation('com.github.natureknight.simplelock:simplelock-spring-starter-mongo:3.0.2')
 ----
 
 === Compatibility:
@@ -236,7 +236,7 @@ If you want to use custom lock implementations, simply implement `com.simplelock
 
 == Changelog:
 
-== 3.0.1
+== 3.0.2
 
 - Simplify project's logic
 - Fixed minor issue related to MongoDB index creating
