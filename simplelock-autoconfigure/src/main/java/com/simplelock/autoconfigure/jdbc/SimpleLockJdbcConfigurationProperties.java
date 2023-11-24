@@ -54,6 +54,8 @@ public class SimpleLockJdbcConfigurationProperties {
     @Data
     public static class Expiry {
 
+        private boolean enabled = true;
+
         private ReleaseStrategy releaseStrategy = ReleaseStrategy.WITHOUT_DELAY;
 
         private long minDelay = 1L;
