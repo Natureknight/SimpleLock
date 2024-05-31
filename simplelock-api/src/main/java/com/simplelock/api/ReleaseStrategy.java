@@ -29,11 +29,6 @@ package com.simplelock.api;
  */
 public enum ReleaseStrategy {
 
-    /**
-     * Not explicitly specified at annotation level, use properties instead.
-     */
-    NOT_SPECIFIED,
-
     WITH_DELAY,
 
     WITHOUT_DELAY

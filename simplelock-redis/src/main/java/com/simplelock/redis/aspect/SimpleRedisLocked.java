@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Stanislav Dabov
+ * Copyright (c) 2022 Stanislav Dabov
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,23 +19,16 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.jdbc.aspect;
+package com.simplelock.redis.aspect;
 
 import com.simplelock.api.ReleaseStrategy;
 
 import java.lang.annotation.*;
 
-/**
- * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking
- *
- * @author Stanislav Dabov
- * @see SimpleJdbcLockedAspect
- * @since 1.0.0
- */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface SimpleJdbcLocked {
+public @interface SimpleRedisLocked {
 
     /**
      * Whether to release lock immediately. This flag will effectively

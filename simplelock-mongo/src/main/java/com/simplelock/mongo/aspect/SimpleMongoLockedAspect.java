@@ -61,10 +61,8 @@ public class SimpleMongoLockedAspect {
 
             // Instantly release the lock after execution
             if (annotation.releaseStrategy() == ReleaseStrategy.WITHOUT_DELAY
-                    || annotation.releaseStrategy() == ReleaseStrategy.NOT_SPECIFIED
                     && releaseStrategy == ReleaseStrategy.WITHOUT_DELAY) {
                 simpleLock.release(tokenOptional.get());
-                return result;
             }
 
             // Don't explicitly release for MongoDB, instead the index will

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Stanislav Dabov
+ * Copyright (c) 2022 Stanislav Dabov
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,29 +19,45 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.jdbc.aspect;
+package com.simplelock.autoconfigure.redis;
 
 import com.simplelock.api.ReleaseStrategy;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.lang.annotation.*;
+import java.util.concurrent.TimeUnit;
 
-/**
- * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking
- *
- * @author Stanislav Dabov
- * @see SimpleJdbcLockedAspect
- * @since 1.0.0
- */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SimpleJdbcLocked {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@ConfigurationProperties(prefix = "simplelock.redis")
+public class SimpleLockRedisConfigurationProperties {
 
     /**
-     * Whether to release lock immediately. This flag will effectively
-     * ignore if the flags below are also set.
-     *
-     * @return whether to release the lock immediately after execution
+     * Whether the Mongo simple lock is enabled.
+     * Default: true
      */
-    ReleaseStrategy releaseStrategy() default ReleaseStrategy.WITHOUT_DELAY;
+    private boolean enabled = true;
+
+    /**
+     * Expiry properties. Keep in mind MongoDB TTL runs every minute, so the delay
+     * could not be less than a minute.
+     */
+    private Expiry expiry = new Expiry();
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class Expiry {
+
+        private boolean enabled = true;
+
+        private ReleaseStrategy releaseStrategy = ReleaseStrategy.WITHOUT_DELAY;
+
+        private long minDelay = 0L;
+
+        private TimeUnit timeUnit = TimeUnit.SECONDS;
+    }
 }

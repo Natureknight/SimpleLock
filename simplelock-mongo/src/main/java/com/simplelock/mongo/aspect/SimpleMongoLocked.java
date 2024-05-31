@@ -36,5 +36,5 @@ public @interface SimpleMongoLocked {
      *
      * @return whether to release the lock immediately after execution
      */
-    ReleaseStrategy releaseStrategy() default ReleaseStrategy.NOT_SPECIFIED;
+    ReleaseStrategy releaseStrategy() default ReleaseStrategy.WITHOUT_DELAY;
 }

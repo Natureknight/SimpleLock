@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.natureknight</groupId>
         <artifactId>simplelock-parent</artifactId>
-        <version>3.0.3</version>
+        <version>3.1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -51,16 +51,11 @@
             </dependency>
             <dependency>
                 <groupId>com.github.natureknight.simplelock</groupId>
-                <artifactId>simplelock-mongo</artifactId>
+                <artifactId>simplelock-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.natureknight</groupId>
-                <artifactId>simplelock-spring-starter-jdbc</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.natureknight.simplelock</groupId>
                 <artifactId>simplelock-spring-starter-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -71,7 +66,7 @@
             </dependency>
             <dependency>
                 <groupId>com.github.natureknight.simplelock</groupId>
-                <artifactId>simplelock-spring-starter-mongo</artifactId>
+                <artifactId>simplelock-spring-starter-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

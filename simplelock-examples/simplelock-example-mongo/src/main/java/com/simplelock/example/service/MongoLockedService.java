@@ -17,7 +17,7 @@ public class MongoLockedService {
     /**
      * Default release delay (10 seconds).
      */
-    @Scheduled(fixedRate = 1000L)
+    @Scheduled(fixedRate = 10000L)
     @SimpleMongoLocked
     public void lockedMethodWithDefaultRelease() {
         log.info("Invoke [lockedMethodWithDefaultRelease] with distributed lock");
@@ -26,13 +26,13 @@ public class MongoLockedService {
     /**
      * Custom release delay after 5000 milliseconds (5 seconds).
      */
-    @Scheduled(fixedRate = 1000L)
+    @Scheduled(fixedRate = 5000L)
     @SimpleMongoLocked
     public void lockedMethodWithCustomReleaseDelay() {
         log.info("Invoke [lockedMethodWithCustomReleaseDelay] with distributed lock");
     }
 
-    @Scheduled(fixedRate = 1000L)
+    @Scheduled(fixedRate = 3000L)
     public void lockedMethodWithInstantRelease() {
         simpleLock.acquire("unique-key")
                 .ifPresent(token -> {

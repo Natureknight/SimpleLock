@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Stanislav Dabov
+ * Copyright (c) 2022 Stanislav Dabov
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,29 +19,22 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.jdbc.aspect;
+package com.github.natureknight.config;
 
-import com.simplelock.api.ReleaseStrategy;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import redis.embedded.RedisServer;
 
-import java.lang.annotation.*;
+import java.io.IOException;
 
-/**
- * Annotation to be used on methods (be aware of the CGLIB proxy) for distributed locking
- *
- * @author Stanislav Dabov
- * @see SimpleJdbcLockedAspect
- * @since 1.0.0
- */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SimpleJdbcLocked {
+@Configuration
+public class EmbeddedRedisConfig {
 
-    /**
-     * Whether to release lock immediately. This flag will effectively
-     * ignore if the flags below are also set.
-     *
-     * @return whether to release the lock immediately after execution
-     */
-    ReleaseStrategy releaseStrategy() default ReleaseStrategy.WITHOUT_DELAY;
+    @Bean
+    public RedisServer redisServer(RedisProperties redisProperties) throws IOException {
+        RedisServer redisServer = new RedisServer(redisProperties.getPort());
+        redisServer.start();
+        return redisServer;
+    }
 }

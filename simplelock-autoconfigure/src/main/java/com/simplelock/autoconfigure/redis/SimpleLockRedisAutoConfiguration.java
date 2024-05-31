@@ -19,11 +19,11 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.autoconfigure.mongo;
+package com.simplelock.autoconfigure.redis;
 
 import com.simplelock.api.SimpleLock;
-import com.simplelock.mongo.MongoSimpleLock;
-import com.simplelock.mongo.aspect.SimpleMongoLockedAspect;
+import com.simplelock.redis.RedisSimpleLock;
+import com.simplelock.redis.aspect.SimpleRedisLockedAspect;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,32 +31,30 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 
 @AutoConfiguration
-@ConditionalOnProperty(value = "simplelock.mongo.enabled", havingValue = "true")
-@EnableConfigurationProperties(SimpleLockMongoConfigurationProperties.class)
+@ConditionalOnProperty(value = "simplelock.redis.enabled", havingValue = "true")
+@EnableConfigurationProperties(SimpleLockRedisConfigurationProperties.class)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-@ConditionalOnClass(MongoTemplate.class)
-public class SimpleLockMongoAutoConfiguration {
+@ConditionalOnClass(RedisTemplate.class)
+public class SimpleLockRedisAutoConfiguration {
 
     @Bean
-    public SimpleMongoLockedAspect simpleMongoLockedAspect(
+    public SimpleRedisLockedAspect simpleRedisLockedAspect(
             SimpleLock simpleLock,
-            SimpleLockMongoConfigurationProperties properties) {
-        return new SimpleMongoLockedAspect(simpleLock, properties.getExpiry().getReleaseStrategy());
+            SimpleLockRedisConfigurationProperties properties) {
+        return new SimpleRedisLockedAspect(simpleLock, properties.getExpiry().getReleaseStrategy());
     }
 
     @ConditionalOnMissingBean
     @Bean
     public SimpleLock simpleLock(
-            MongoTemplate mongoTemplate,
-            SimpleLockMongoConfigurationProperties properties) {
+            RedisTemplate<Object, Object> redisTemplate,
+            SimpleLockRedisConfigurationProperties properties) {
 
-        return new MongoSimpleLock(
-                mongoTemplate,
+        return new RedisSimpleLock(redisTemplate,
                 properties.getExpiry().getMinDelay(),
-                properties.getExpiry().getTimeUnit()
-        );
+                properties.getExpiry().getTimeUnit());
     }
 }

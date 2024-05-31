@@ -2,7 +2,7 @@
 <!--
   ~ The MIT License (MIT)
   ~
-  ~ Copyright (c) 2023 Stanislav Dabov
+  ~ Copyright (c) 2022 Stanislav Dabov
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
   ~ and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,17 +20,42 @@
   ~ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
+<!--suppress VulnerableLibrariesLocal -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>simplelock-parent</artifactId>
-        <groupId>com.github.natureknight</groupId>
-        <version>3.1.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.natureknight</groupId>
+        <artifactId>simplelock-parent</artifactId>
+        <version>3.1.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
-    <artifactId>simplelock-api</artifactId>
+    <artifactId>simplelock-example-redis</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.natureknight</groupId>
+            <artifactId>simplelock-spring-starter-redis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.codemonstur</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -19,7 +19,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.jdbc.aspect;
+package com.simplelock.redis.aspect;
 
 import com.simplelock.api.ReleaseStrategy;
 import com.simplelock.api.SimpleLock;
@@ -32,48 +32,39 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 import java.util.Optional;
 
-/**
- * This aspect will inject the behaviour of acquiring the lock before the annotated method and
- * then release the lock only if the annotated method managed to successfully acquire the lock
- *
- * @author Stanislav Dabov
- * @see SimpleJdbcLocked
- * @since 1.0.0
- */
 @Aspect
 @RequiredArgsConstructor
 @Slf4j
-public class SimpleJdbcLockedAspect {
+public class SimpleRedisLockedAspect {
 
     private static final String UNIQUE_KEY = "aop-unique-key";
 
     private final SimpleLock simpleLock;
     private final ReleaseStrategy releaseStrategy;
 
-    @Around("@annotation(com.simplelock.jdbc.aspect.SimpleJdbcLocked)")
+    @Around("@annotation(com.simplelock.redis.aspect.SimpleRedisLocked)")
     public Object intercept(ProceedingJoinPoint joinPoint) throws Throwable {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        SimpleJdbcLocked annotation = signature.getMethod().getAnnotation(SimpleJdbcLocked.class);
+        SimpleRedisLocked annotation = signature.getMethod().getAnnotation(SimpleRedisLocked.class);
 
         log.debug("Intercepted method [{}] annotated with [{}]", signature.getMethod().getName(),
-                SimpleJdbcLocked.class.getSimpleName());
+                SimpleRedisLocked.class.getSimpleName());
+
+        String lockKey = signature.getMethod().getName() + "-" + UNIQUE_KEY;
 
         // Try to acquire lock by using just the method name as unique key
-        Optional<String> tokenOptional = simpleLock.acquire(
-                signature.getMethod().getName() + "-" + UNIQUE_KEY);
+        Optional<String> tokenOptional = simpleLock.acquire(lockKey);
 
         if (tokenOptional.isPresent()) {
             // Proceed with execution if lock successfully acquired
             Object result = joinPoint.proceed();
 
-            if (annotation.releaseStrategy() == ReleaseStrategy.WITHOUT_DELAY
-                    && releaseStrategy == ReleaseStrategy.WITHOUT_DELAY) {
+            if (releaseStrategy != ReleaseStrategy.WITH_DELAY
+                    && annotation.releaseStrategy() != ReleaseStrategy.WITH_DELAY) {
                 simpleLock.release(tokenOptional.get());
             }
 
-            // leave releasing the lock to the cleanup service after the
-            // configured cleanup delay
             return result;
         }
 

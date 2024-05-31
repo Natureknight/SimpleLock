@@ -20,6 +20,7 @@
   ~ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
+<!--suppress VulnerableLibrariesLocal -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -27,10 +28,37 @@
         <artifactId>simplelock-parent</artifactId>
         <groupId>com.github.natureknight</groupId>
         <version>3.1.0</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>simplelock-api</artifactId>
+    <artifactId>simplelock-spring-starter-redis</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.natureknight</groupId>
+            <artifactId>simplelock-autoconfigure</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.natureknight</groupId>
+            <artifactId>simplelock-redis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.natureknight</groupId>
+            <artifactId>simplelock-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.reporting</groupId>
+            <artifactId>maven-reporting-api</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+    </dependencies>
 
 </project>

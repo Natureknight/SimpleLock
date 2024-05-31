@@ -25,7 +25,6 @@ import com.simplelock.api.SimpleLock;
 import com.simplelock.jdbc.JdbcSimpleLock;
 import com.simplelock.jdbc.aspect.SimpleJdbcLockedAspect;
 import com.simplelock.jdbc.service.JdbcCleanupService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

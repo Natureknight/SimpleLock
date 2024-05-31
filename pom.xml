@@ -30,10 +30,13 @@
         <module>simplelock-dependencies</module>
         <module>simplelock-jdbc</module>
         <module>simplelock-mongo</module>
+        <module>simplelock-redis</module>
         <module>simplelock-spring-starters/simplelock-spring-starter-jdbc</module>
         <module>simplelock-spring-starters/simplelock-spring-starter-mongo</module>
+        <module>simplelock-spring-starters/simplelock-spring-starter-redis</module>
         <module>simplelock-examples/simplelock-example-jdbc</module>
         <module>simplelock-examples/simplelock-example-mongo</module>
+        <module>simplelock-examples/simplelock-example-redis</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -47,9 +50,10 @@
 
     <groupId>com.github.natureknight</groupId>
     <artifactId>simplelock-parent</artifactId>
-    <version>3.0.3</version>
+    <version>3.1.0</version>
 
     <properties>
+        <simplelock.version>3.1.0</simplelock.version>
         <java.version>11</java.version>
         <spring.version>2.7.5</spring.version>
         <sonar.organization>simplelock</sonar.organization>

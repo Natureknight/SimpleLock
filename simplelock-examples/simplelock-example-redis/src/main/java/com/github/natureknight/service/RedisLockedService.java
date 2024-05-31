@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Stanislav Dabov
+ * Copyright (c) 2022 Stanislav Dabov
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,25 +19,19 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.simplelock.example.service;
+package com.github.natureknight.service;
 
 import com.simplelock.api.SimpleLock;
-import com.simplelock.jdbc.aspect.SimpleJdbcLocked;
+import com.simplelock.redis.aspect.SimpleRedisLocked;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-/**
- * Example locked service implementation
- *
- * @author Stanislav Dabov
- * @since 1.6.1
- */
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
-public class JdbcLockedService {
+public class RedisLockedService {
 
     private final SimpleLock simpleLock;
 
@@ -45,7 +39,7 @@ public class JdbcLockedService {
      * Default release delay (10 seconds).
      */
     @Scheduled(fixedRate = 10000L)
-    @SimpleJdbcLocked
+    @SimpleRedisLocked
     public void lockedMethodWithDefaultRelease() {
         log.info("Invoke [lockedMethodWithDefaultRelease] with distributed lock");
     }
@@ -54,7 +48,7 @@ public class JdbcLockedService {
      * Custom release delay after 5000 milliseconds (5 seconds).
      */
     @Scheduled(fixedRate = 5000L)
-    @SimpleJdbcLocked
+    @SimpleRedisLocked
     public void lockedMethodWithCustomReleaseDelay() {
         log.info("Invoke [lockedMethodWithCustomReleaseDelay] with distributed lock");
     }
