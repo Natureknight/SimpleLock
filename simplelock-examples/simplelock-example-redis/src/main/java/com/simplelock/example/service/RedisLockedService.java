@@ -19,7 +19,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.github.natureknight.service;
+package com.simplelock.example.service;
 
 import com.simplelock.api.SimpleLock;
 import com.simplelock.redis.aspect.SimpleRedisLocked;

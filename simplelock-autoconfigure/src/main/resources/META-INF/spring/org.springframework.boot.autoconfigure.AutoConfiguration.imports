@@ -1,2 +1,3 @@
 com.simplelock.autoconfigure.jdbc.SimpleLockJdbcAutoConfiguration
 com.simplelock.autoconfigure.mongo.SimpleLockMongoAutoConfiguration
+com.simplelock.autoconfigure.redis.SimpleLockRedisAutoConfiguration

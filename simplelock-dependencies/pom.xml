@@ -51,6 +51,16 @@
             </dependency>
             <dependency>
                 <groupId>com.github.natureknight.simplelock</groupId>
+                <artifactId>simplelock-mongo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.natureknight</groupId>
+                <artifactId>simplelock-redis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.natureknight.simplelock</groupId>
                 <artifactId>simplelock-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -60,8 +70,23 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.github.natureknight.simplelock</groupId>
+                <artifactId>simplelock-spring-starter-jdbc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.github.natureknight</groupId>
                 <artifactId>simplelock-spring-starter-mongo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.natureknight.simplelock</groupId>
+                <artifactId>simplelock-spring-starter-mongo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.natureknight</groupId>
+                <artifactId>simplelock-spring-starter-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
