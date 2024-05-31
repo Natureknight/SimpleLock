@@ -68,7 +68,8 @@
             **/com/simplelock/api/**/*,
             **/*ConfigurationProperties.java,
             **/example/**,
-            **/mongo/**
+            **/mongo/**,
+            **/redis/**
         </sonar.exclusions>
     </properties>
 
