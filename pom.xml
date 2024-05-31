@@ -51,10 +51,10 @@
 
     <groupId>com.github.natureknight</groupId>
     <artifactId>simplelock-parent</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
 
     <properties>
-        <simplelock.version>3.1.1</simplelock.version>
+        <simplelock.version>3.1.2</simplelock.version>
         <java.version>17</java.version>
         <spring.version>3.3.0</spring.version>
         <sonar.organization>simplelock</sonar.organization>
