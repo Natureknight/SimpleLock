@@ -2,9 +2,9 @@ image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_Simp
 image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=coverage[link="https://sonarcloud.io/summary/overall?id=Natureknight_SimpleLock"]
 image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=bugs[link="https://sonarcloud.io/summary/overall?id=Natureknight_SimpleLock"]
 image:https://sonarcloud.io/api/project_badges/measure?project=Natureknight_SimpleLock&metric=vulnerabilities[link="https://sonarcloud.io/summary/overall?id=Natureknight_SimpleLock"] +
-image:https://img.shields.io/badge/Java-11%2B-ED8B00?style=for-the-badge&labelColor=ED8B00&logo=java&color=808080[Java]
+image:https://img.shields.io/badge/Java-17%2B-ED8B00?style=for-the-badge&labelColor=ED8B00&logo=java&color=808080[Java]
 image:https://img.shields.io/jitpack/v/github/Natureknight/SimpleLock?style=for-the-badge&labelColor=007ec5&color=808080&logo=Git&logoColor=white[JitPack]
-image:https://img.shields.io/badge/Spring%20Boot-2.7.5-ED8B00?style=for-the-badge&labelColor=6db33f&color=808080&logo=Spring%20Boot&logoColor=white[Spring Boot]
+image:https://img.shields.io/badge/Spring%20Boot-3.3.0-ED8B00?style=for-the-badge&labelColor=6db33f&color=808080&logo=Spring%20Boot&logoColor=white[Spring Boot]
 image:https://img.shields.io/github/license/Natureknight/SimpleLock?style=for-the-badge&color=808080&logo=Open%20Source%20Initiative&logoColor=white[License]
 
 == SimpleLock for Spring Boot: (SQL and NoSQL)
