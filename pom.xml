@@ -56,7 +56,7 @@
     <properties>
         <simplelock.version>3.1.1</simplelock.version>
         <java.version>17</java.version>
-        <spring.version>2.7.5</spring.version>
+        <spring.version>3.3.0</spring.version>
         <sonar.organization>simplelock</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <jacoco.version>0.8.8</jacoco.version>
